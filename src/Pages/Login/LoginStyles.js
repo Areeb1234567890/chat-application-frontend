@@ -16,6 +16,10 @@ export const Form = styled.form`
   border-radius: 10px;
   text-align: center;
   padding: 30px 20px;
+  #hr {
+    all: initial !important;
+    margin: 0 !important;
+  }
   h1 {
     font-family: Roboto;
     color: #dadada;
@@ -71,3 +75,5 @@ export const Button = styled.button`
     background-color: #264344;
   }
 `;
+
+export const Hr = styled.hr``;

@@ -2,25 +2,22 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import TopBar from "./components/TopBar/TopBar.jsx";
-import SideNav from "./components/SideNav/SideNav.jsx";
-import Chat from "./components/Chat/Chat.jsx";
-import Login from "./components/Login/Login.jsx";
-import Register from "./components/Register/Register.jsx";
+import Login from "./Pages/Login/Login.jsx";
+import Register from "./Pages/Register/Register.jsx";
+import Home from "./Pages/Home/Home.jsx";
 
 function App() {
+  const _token = sessionStorage.getItem("authUser");
+  const isAuthenticated = _token ? true : false;
+
   return (
     <Router>
       <>
-        {/* <TopBar />
-        <div className="wrapper">
-          <SideNav />
-          <Chat />
-        </div> */}
         <ToastContainer />
         <Routes>
-          <Route path="/" element={<Login />}></Route>
-          <Route path="/register" element={<Register />}></Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </>
     </Router>

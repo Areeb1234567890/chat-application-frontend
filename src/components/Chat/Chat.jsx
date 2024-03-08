@@ -1,11 +1,7 @@
 import React from "react";
 
 const Chat = () => {
-  return (
-    <div className="chat">
-      <h1>this is the chat section</h1>
-    </div>
-  );
+  return <div className="chat"></div>;
 };
 
 export default Chat;
