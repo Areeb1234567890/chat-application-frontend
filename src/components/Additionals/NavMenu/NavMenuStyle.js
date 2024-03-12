@@ -18,4 +18,7 @@ export const Menus = styled.div`
       background-color: #dadada33;
     }
   }
+  .hover {
+    background-color: #dadada33;
+  }
 `;

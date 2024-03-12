@@ -10,14 +10,19 @@ export const AuthProvider = ({ children }) => {
       const res = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, data);
       const { user, success, token, msg } = res.data;
       if (success) {
+        console.log(user);
         const authUserData = JSON.stringify({
           token,
-          userName: user.name,
           userId: user._id,
+          name: user.name,
+          profilePicture: user.profileImage,
+          bio: user.bio,
+          email: user.email,
         });
         sessionStorage.setItem("authUser", authUserData);
-        toast.success(msg);
         navigate("/");
+        window.location.reload();
+        toast.success(msg);
       }
     } catch (error) {
       console.log(error);
@@ -44,6 +49,7 @@ export const AuthProvider = ({ children }) => {
   const Logout = ({ navigate }) => {
     sessionStorage.removeItem("authUser");
     navigate("/login");
+    window.location.reload();
     toast.success("Logout successfully");
   };
 

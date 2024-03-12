@@ -59,8 +59,8 @@ export const Contacts = styled.div`
     }
     .Image {
       img {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
       }
     }

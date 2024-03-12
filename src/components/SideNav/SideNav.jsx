@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Sidenav, Contacts } from "./SideStyles";
 import filter from "../../assets/images/filter.png";
-import avatar from "../../assets/images/avatar.jpg";
+import avatar from "../../assets/images/avatar2.png";
 
 const SideNav = () => {
   const [isIconClicked, setIsIconClicked] = useState(false);

@@ -5,6 +5,7 @@ export const Topbar = styled.div`
   height: 60px;
   background-color: #202c33;
   user-select: none;
+  display: flex;
   .user {
     width: 30%;
     height: 100%;
@@ -17,5 +18,33 @@ export const Topbar = styled.div`
 
   .sender {
     width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+
+    .func {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex-direction: row-reverse;
+      .imgDiv {
+        user-select: none;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &:hover {
+          background-color: #dadada33;
+        }
+      }
+      .hover {
+        background-color: #dadada33;
+      }
+    }
   }
 `;

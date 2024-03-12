@@ -35,11 +35,6 @@ a {
   padding: 20px 15px 0px;
 }
 
-.chat {
-  width: 70%;
-  height: 87vh;
-  background-color: #222e35;
-}
 .wrapper {
   display: flex;
 }

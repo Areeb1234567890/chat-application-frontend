@@ -108,5 +108,6 @@ export const InputSec = styled.div`
     padding: 10px 0 20px;
     color: #dadada;
     font-family: Roboto;
+    font-weight: 300;
   }
 `;
