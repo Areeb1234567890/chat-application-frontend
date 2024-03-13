@@ -1,16 +1,18 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const _token = sessionStorage.getItem("authUser");
+  const { userId } = _token ? JSON.parse(_token) : {};
+
   const Login = async ({ data, navigate }) => {
     try {
       const res = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, data);
       const { user, success, token, msg } = res.data;
       if (success) {
-        console.log(user);
         const authUserData = JSON.stringify({
           token,
           userId: user._id,
@@ -25,7 +27,6 @@ export const AuthProvider = ({ children }) => {
         toast.success(msg);
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.msg);
     }
   };
@@ -41,7 +42,33 @@ export const AuthProvider = ({ children }) => {
         navigate("/login");
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.msg);
+    }
+  };
+
+  const updateUser = async ({ data }) => {
+    try {
+      const res = await axios.put(
+        `${process.env.REACT_APP_UPDATE_USER_URL}/${userId}`,
+        data
+      );
+      if (res) {
+        const updatedUserData = res.data.user;
+        const authUserData = JSON.parse(sessionStorage.getItem("authUser"));
+        const newAuthUserData = {
+          ...authUserData,
+          userId: updatedUserData._id,
+          name: updatedUserData.name,
+          profilePicture: updatedUserData.profileImage,
+          bio: updatedUserData.bio,
+          email: updatedUserData.email,
+        };
+        sessionStorage.setItem("authUser", JSON.stringify(newAuthUserData));
+
+        toast.success(res.data.msg);
+        window.location.reload();
+      }
+    } catch (error) {
       toast.error(error.response.data.msg);
     }
   };
@@ -57,6 +84,7 @@ export const AuthProvider = ({ children }) => {
     Login,
     Register,
     Logout,
+    updateUser,
   };
 
   return (

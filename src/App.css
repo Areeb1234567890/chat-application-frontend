@@ -38,3 +38,25 @@ a {
 .wrapper {
   display: flex;
 }
+
+.loadingCon {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #0c131784; */
+}
+
+.loader {
+  position: absolute;
+  border-radius: 50%;
+  width: 260px;
+  top: 50%;
+  right: -250%;
+  left: 50%;
+  z-index: 1;
+  bottom: 50%;
+  transform: translate(-50%, -50%);
+}
