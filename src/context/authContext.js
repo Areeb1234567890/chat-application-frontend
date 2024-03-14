@@ -64,7 +64,6 @@ export const AuthProvider = ({ children }) => {
           email: updatedUserData.email,
         };
         sessionStorage.setItem("authUser", JSON.stringify(newAuthUserData));
-
         toast.success(res.data.msg);
         window.location.reload();
       }

@@ -3,6 +3,7 @@ import { Container, Form, Button, Hr } from "./LoginStyles";
 import logo from "../../assets/images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/authContext";
+import Loader from "../../components/Additionals/Loader/Loader";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Login = () => {
     password: "",
   };
   const [data, setData] = useState(value);
+  const [isLoading, setIsLoading] = useState(Boolean);
   const { Login } = useAuthContext();
 
   const inputHandler = (e) => {
@@ -18,13 +20,16 @@ const Login = () => {
     setData({ ...data, [name]: value });
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    Login({ data, navigate });
+    setIsLoading(true);
+    await Login({ data, navigate });
+    setIsLoading(false);
   };
 
   return (
     <Container>
+      {isLoading ? <Loader /> : ""}
       <Form
         onSubmit={(e) => {
           submitHandler(e);

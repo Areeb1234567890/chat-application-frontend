@@ -3,7 +3,7 @@ import spinner from "../../../assets/images/Spinner.svg";
 
 const Loader = () => {
   return (
-    <div className="loadingCon">
+    <div className="loadingContainer">
       <img className="loader" src={spinner} alt="spinner" />
     </div>
   );

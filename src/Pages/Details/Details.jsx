@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/authContext";
 import avatar2 from "../../assets/images/avatar2.png";
 import logo from "../../assets/images/logo.png";
+import Loader from "../../components/Additionals/Loader/Loader";
 
 const Details = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Details = () => {
   };
   const [data, setData] = useState(value);
   const [selectedImage, setSelectedImage] = useState(avatar2);
+  const [isLoading, setIsLoading] = useState(Boolean);
 
   const inputHandler = (e) => {
     const { name } = e.target;
@@ -38,6 +40,7 @@ const Details = () => {
 
   const Submithandler = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
@@ -45,9 +48,11 @@ const Details = () => {
     formData.append("bio", data.bio);
     formData.append("file", data.file);
     await Register({ data: formData, navigate });
+    setIsLoading(false);
   };
   return (
     <Container>
+      {isLoading ? <Loader /> : ""}
       <Form2
         image={selectedImage}
         onSubmit={(e) => {

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import avatar from "../../../assets/images/avatar2.png";
 import confirm from "../../../assets/images/tick.png";
 import spinner from "../../../assets/images/ProfileLoader.svg";
+import tick from "../../../assets/images/confirm.png";
+import cancel from "../../../assets/images/cancel.png";
 import Drawer from "@mui/material/Drawer";
 import arrow from "../../../assets/images/Arrow-back.png";
 import cameraIcon from "../../../assets/images/camera.png";
@@ -59,6 +61,8 @@ const ProfileSec = () => {
   const [data, setData] = useState(value);
   const [selectedImage, setSelectedImage] = useState();
   const [isLoading, setIsLoading] = useState(Boolean);
+  const [isActive, setIsActive] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { updateUser } = useAuthContext();
 
   const toggleDrawer = (newOpen) => () => {
@@ -97,6 +101,7 @@ const ProfileSec = () => {
     } else {
       const value = e.target.value;
       setData({ ...data, [name]: value });
+      console.log(data);
     }
   };
 
@@ -139,7 +144,13 @@ const ProfileSec = () => {
           />
           <h3>Profile</h3>
         </Top>
-
+        {isLoading ? (
+          <div className="loadingCon">
+            <img className="loader" src={spinner} alt="spinner" />
+          </div>
+        ) : (
+          ""
+        )}
         <ImageSec image={profilePicture || avatar}>
           <Menu
             id="demo-positioned-menu"
@@ -231,74 +242,68 @@ const ProfileSec = () => {
               </div>
             </Box>
           </Modal>
-
-          {isLoading ? (
-            <div className="loadingCon">
-              <img className="loader" src={spinner} alt="spinner" />
-            </div>
-          ) : (
-            <Modal
-              open={open4}
-              onClose={handleClose3}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={style2} className="ModalBody">
-                <div
+          <Modal
+            open={open4}
+            onClose={handleClose3}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style2} className="ModalBody">
+              <div
+                style={{
+                  width: "100%",
+                  height: "10%",
+                  backgroundColor: "#202c33",
+                  textAlign: "center",
+                  borderTopRightRadius: "15px",
+                  borderTopLeftRadius: "15px",
+                }}
+              >
+                <h3 style={{ color: "#dadada", paddingTop: "5px" }}>
+                  Change profile Photo
+                </h3>
+              </div>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "85%",
+                  marginTop: "15px",
+                }}
+              >
+                <img
+                  className="profileIcon"
+                  src={selectedImage}
+                  alt="profile"
                   style={{
                     width: "100%",
-                    height: "10%",
-                    backgroundColor: "#202c33",
-                    textAlign: "center",
-                    borderRadius: "15px",
+                    height: "100%",
+                    position: "absolute",
+                    top: "0",
+                    bottom: "0",
+                    left: "0",
+                    right: "0",
+                    objectFit: "contain",
                   }}
-                >
-                  <h3 style={{ color: "#dadada", paddingTop: "5px" }}>
-                    Change profile Photo
-                  </h3>
-                </div>
-                <div
+                />
+                <img
+                  onClick={() => {
+                    updateProfile();
+                  }}
                   style={{
-                    position: "relative",
-                    width: "100%",
-                    height: "85%",
-                    marginTop: "15px",
+                    position: "absolute",
+                    height: "80px",
+                    width: "80px",
+                    right: "10px",
+                    cursor: "pointer",
+                    bottom: "-20px",
                   }}
-                >
-                  <img
-                    className="profileIcon"
-                    src={selectedImage}
-                    alt="profile"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      position: "absolute",
-                      top: "0",
-                      bottom: "0",
-                      left: "0",
-                      right: "0",
-                      objectFit: "contain",
-                    }}
-                  />
-                  <img
-                    onClick={() => {
-                      updateProfile();
-                    }}
-                    style={{
-                      position: "absolute",
-                      height: "80px",
-                      width: "80px",
-                      right: "10px",
-                      cursor: "pointer",
-                      bottom: "-20px",
-                    }}
-                    src={confirm}
-                    alt="img"
-                  />
-                </div>
-              </Box>
-            </Modal>
-          )}
+                  src={confirm}
+                  alt="img"
+                />
+              </div>
+            </Box>
+          </Modal>
 
           <div className="imageCon" onClick={handleClick}>
             <div className={`hover ${open2 ? "active" : ""}`}>
@@ -310,23 +315,81 @@ const ProfileSec = () => {
           </div>
         </ImageSec>
 
-        <InputSec>
+        <InputSec isActive={isActive} isOpen={isOpen}>
           <span>Your name</span>
-          <div className="name">
-            <h3>{name}</h3>
-            <img src={editIcon} alt="" />
+          <div>
+            <div className="nameWrapper">
+              <div className="name">
+                <h3 className="bio">{name}</h3>
+                <img
+                  src={editIcon}
+                  className="editIcon"
+                  onClick={() => setIsOpen(true)}
+                  alt="EditIcon"
+                />
+              </div>
+            </div>
+            <div className="editWrapper">
+              <div className="editCon">
+                <input
+                  type="text"
+                  name="name"
+                  autocomplete="off"
+                  onChange={(e) => inputHandler(e)}
+                  placeholder={name}
+                />
+                <img
+                  src={tick}
+                  className="aboutIcons"
+                  onClick={() => updateProfile()}
+                  alt="confirmIcon"
+                />
+                <img
+                  src={cancel}
+                  className="aboutIcons"
+                  onClick={() => setIsOpen(false)}
+                  alt="canelIcon"
+                />
+              </div>
+            </div>
           </div>
-
           <span id="detail">
             This is not your username or pin. This name will be visible to your
             Chat contacts.
           </span>
           <br />
+
           <div style={{ marginTop: "25px" }}>
             <span>About</span>
-            <div className="name">
-              <h3>{bio}</h3>
-              <img src={editIcon} alt="" />
+            <div className="about">
+              <div className="edit">
+                <input
+                  type="text"
+                  name="bio"
+                  autocomplete="off"
+                  onChange={(e) => inputHandler(e)}
+                  placeholder={bio}
+                />
+                <img
+                  src={tick}
+                  className="aboutIcons"
+                  onClick={() => updateProfile()}
+                  alt="confirmIcon"
+                />
+                <img
+                  src={cancel}
+                  className="aboutIcons"
+                  onClick={() => setIsActive(false)}
+                  alt="canelIcon"
+                />
+              </div>
+              <h3 className="bio">{bio}</h3>
+              <img
+                src={editIcon}
+                className="editIcon"
+                alt="editIcon"
+                onClick={() => setIsActive(true)}
+              />
             </div>
           </div>
         </InputSec>

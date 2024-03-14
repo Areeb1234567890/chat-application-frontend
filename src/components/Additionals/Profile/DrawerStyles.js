@@ -81,20 +81,110 @@ export const ImageSec = styled.div`
 
 export const InputSec = styled.div`
   padding: 30px 30px;
+  user-select: none;
   span {
     font-family: Roboto;
     color: #00a8849c;
     user-select: none;
     font-weight: 400;
   }
-  .name {
+  .nameWrapper {
+    display: ${({ isOpen }) => (isOpen ? "none" : "block")};
+    .name {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      width: 100%;
+      img {
+        width: 25px;
+        cursor: pointer;
+      }
+      .bio {
+        transition: display 0.5s all ease-in-out;
+        display: ${({ isOpen }) => (isOpen ? "none" : "block")};
+      }
+      .editIcon {
+        transition: display 0.5s all ease-in-out;
+        display: ${({ isOpen }) => (isOpen ? "none" : "block")};
+      }
+    }
+  }
+
+  .editWrapper {
+    display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+    margin-bottom: 20px;
+    .editCon {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 5px;
+      img {
+        width: 25px;
+        cursor: pointer;
+      }
+      input {
+        width: 100%;
+        height: 40px;
+        background-color: transparent;
+        color: #dadada;
+        border: none;
+        border-bottom: 2px solid #06cf9c;
+        outline: none;
+        font-size: 15px;
+        font-weight: 400;
+        transition: display 0.5s ease-in-out;
+        display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+      }
+      .aboutIcons {
+        display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+      }
+    }
+  }
+
+  .about {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
     width: 100%;
     img {
       width: 25px;
       cursor: pointer;
+    }
+    .bio {
+      transition: display 0.5s all ease-in-out;
+      display: ${({ isActive }) => (isActive ? "none" : "block")};
+    }
+    .editIcon {
+      transition: display 0.5s all ease-in-out;
+      display: ${({ isActive }) => (isActive ? "none" : "block")};
+    }
+    .edit {
+      position: absolute;
+      width: 100%;
+      margin-top: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 5px;
+      input {
+        width: 100%;
+        height: 40px;
+        background-color: transparent;
+        color: #dadada;
+        border: none;
+        border-bottom: 2px solid #06cf9c;
+        outline: none;
+        font-size: 15px;
+        font-weight: 400;
+        transition: display 0.5s ease-in-out;
+        display: ${({ isActive }) => (isActive ? "block" : "none")};
+      }
+      .aboutIcons {
+        display: ${({ isActive }) => (isActive ? "block" : "none")};
+      }
     }
   }
   #detail {
