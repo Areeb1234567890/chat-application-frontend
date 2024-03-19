@@ -1,15 +1,17 @@
 import React from "react";
-import TopBar from "../../components/TopBar/TopBar.jsx";
 import SideNav from "../../components/SideNav/SideNav.jsx";
 import Chat from "../../components/Chat/Chat.jsx";
+import DummyChat from "../../components/DummyChat/DummyChat.jsx";
+import { useAuthContext } from "../../context/authContext.js";
 
 const Home = () => {
+  const { openChat } = useAuthContext();
+
   return (
     <div className="main">
-      <TopBar />
       <div className="wrapper">
         <SideNav />
-        <Chat />
+        {openChat === true ? <Chat /> : <DummyChat />}
       </div>
     </div>
   );

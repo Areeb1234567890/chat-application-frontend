@@ -62,6 +62,17 @@ a {
   background-color: #0c131784;
   user-select: none;
 }
+.loaderSvg {
+  position: absolute;
+  border-radius: 50%;
+  width: 260px;
+  top: 33%;
+  right: -250%;
+  left: 50%;
+  z-index: 1;
+  bottom: 50%;
+  transform: translate(-50%, -50%);
+}
 .loader {
   position: absolute;
   border-radius: 50%;

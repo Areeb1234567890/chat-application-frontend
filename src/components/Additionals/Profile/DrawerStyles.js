@@ -201,3 +201,37 @@ export const InputSec = styled.div`
     font-weight: 300;
   }
 `;
+export const Button = styled.button`
+  width: 150px;
+  height: 40px;
+  background-color: #3b6c6e;
+  transition: background-color 0.3s ease-in-out;
+  border: none;
+  outline: none;
+  color: #dadada;
+  font-family: Roboto;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #264344;
+  }
+`;
+export const ButtonCancel = styled.button`
+  width: 150px;
+  height: 40px;
+  background-color: #fe5955;
+  transition: background-color 0.3s ease-in-out;
+  border: none;
+  outline: none;
+  color: #dadada;
+  font-family: Roboto;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #264344;
+  }
+`;

@@ -1,11 +1,20 @@
 import styled from "styled-components";
 
-export const Sidenav = styled.div`
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 30%;
+
+`;
+
+export const Sidenav = styled.div`
+  width: 100%;
   height: 87vh;
   background-color: #111b21;
   border-right: 0.1px solid #dadada52;
   user-select: none;
+  overflow-y: hidden;
+  padding-bottom: 25px;
   .Actions {
     display: flex;
     align-items: center;
@@ -88,5 +97,8 @@ export const Contacts = styled.div`
         }
       }
     }
+  }
+  .active {
+    background-color: #2a3942;
   }
 `;

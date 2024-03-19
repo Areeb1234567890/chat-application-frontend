@@ -1,7 +1,11 @@
 import styled from "styled-components";
 
-export const ChatWrap = styled.div`
+export const Wrapper = styled.div`
   width: 70%;
+`;
+
+export const ChatWrap = styled.div`
+  width: 100%;
   height: 87vh;
   background-color: #0b141a;
   position: relative;

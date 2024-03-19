@@ -13,7 +13,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { Profile, Top, ImageSec, InputSec } from "./DrawerStyles";
+import {
+  Profile,
+  Top,
+  ImageSec,
+  InputSec,
+  Button,
+  ButtonCancel,
+} from "./DrawerStyles";
 import { useAuthContext } from "../../../context/authContext";
 
 const ProfileSec = () => {
@@ -40,6 +47,20 @@ const ProfileSec = () => {
     borderRadius: "15px",
     padding: "0 0 20px",
   };
+  const removeModalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "30%",
+    height: "20%",
+    boxShadow: 0,
+    backgroundColor: "#111b21",
+    borderRadius: "15px",
+    padding: "30px 20px 0",
+    textAlign: "center",
+    color: "#dadada",
+  };
   const menuItemHoverStyle = {
     position: "relative",
     "&:hover": {
@@ -58,12 +79,13 @@ const ProfileSec = () => {
   const open2 = Boolean(anchorEl);
   const [open3, setOpen3] = useState(false);
   const [open4, setOpen4] = useState(false);
+  const [removeModal, setRemoveModal] = useState(false);
   const [data, setData] = useState(value);
   const [selectedImage, setSelectedImage] = useState();
   const [isLoading, setIsLoading] = useState(Boolean);
   const [isActive, setIsActive] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { updateUser } = useAuthContext();
+  const { updateUser, deleteProfile } = useAuthContext();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -86,6 +108,12 @@ const ProfileSec = () => {
   const handleClose3 = () => {
     setOpen4(false);
   };
+  const removeModalClose = () => {
+    setRemoveModal(false);
+  };
+  const removeModalOpen = () => {
+    setRemoveModal(true);
+  };
   const inputHandler = (e) => {
     const { name } = e.target;
     if (name == "file") {
@@ -104,7 +132,6 @@ const ProfileSec = () => {
       console.log(data);
     }
   };
-
   const updateProfile = async () => {
     handleClose3();
     setIsLoading(true);
@@ -113,6 +140,12 @@ const ProfileSec = () => {
     formData.append("bio", data.bio);
     formData.append("file", data.file);
     await updateUser({ data: formData });
+    setIsLoading(false);
+  };
+  const RemoveProfile = async () => {
+    removeModalClose();
+    setIsLoading(true);
+    await deleteProfile();
     setIsLoading(false);
   };
 
@@ -146,7 +179,7 @@ const ProfileSec = () => {
         </Top>
         {isLoading ? (
           <div className="loadingCon">
-            <img className="loader" src={spinner} alt="spinner" />
+            <img className="loaderSvg" src={spinner} alt="spinner" />
           </div>
         ) : (
           ""
@@ -195,7 +228,13 @@ const ProfileSec = () => {
                 type="file"
               />
             </MenuItem>
-            <MenuItem sx={menuItemHoverStyle} onClick={handleClose}>
+            <MenuItem
+              sx={menuItemHoverStyle}
+              onClick={() => {
+                handleClose();
+                removeModalOpen();
+              }}
+            >
               Remove photo
             </MenuItem>
             <MenuItem
@@ -301,6 +340,35 @@ const ProfileSec = () => {
                   src={confirm}
                   alt="img"
                 />
+              </div>
+            </Box>
+          </Modal>
+          <Modal
+            open={removeModal}
+            onClose={removeModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={removeModalStyle} className="ModalBody">
+              <h3>Are you sure to remove your Profile picture?</h3>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingTop: "20px",
+                  gap: "20px",
+                  userSelect: "none",
+                }}
+              >
+                <ButtonCancel onClick={() => RemoveProfile()}>Yes</ButtonCancel>
+                <Button
+                  onClick={() => {
+                    removeModalClose();
+                  }}
+                >
+                  No
+                </Button>
               </div>
             </Box>
           </Modal>

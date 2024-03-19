@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const _token = sessionStorage.getItem("authUser");
   const { userId } = _token ? JSON.parse(_token) : {};
+  const [openChat, setOpenChat] = useState(false);
 
   const Login = async ({ data, navigate }) => {
     try {
@@ -72,6 +73,38 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteProfile = async () => {
+    try {
+      const res = await axios.put(
+        `${process.env.REACT_APP_DELETE_PICTURE_URL}/${userId}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (res) {
+        const { user, msg } = res.data;
+        const updatedUserData = user;
+        const authUserData = JSON.parse(sessionStorage.getItem("authUser"));
+        const newAuthUserData = {
+          ...authUserData,
+          userId: updatedUserData._id,
+          name: updatedUserData.name,
+          profilePicture: updatedUserData.profileImage || "",
+          bio: updatedUserData.bio,
+          email: updatedUserData.email,
+        };
+        sessionStorage.setItem("authUser", JSON.stringify(newAuthUserData));
+        toast.success(msg);
+        window.location.reload();
+      }
+    } catch (error) {
+      toast.error(error.response.data.msg);
+    }
+  };
+
   const Logout = ({ navigate }) => {
     sessionStorage.removeItem("authUser");
     navigate("/login");
@@ -84,6 +117,9 @@ export const AuthProvider = ({ children }) => {
     Register,
     Logout,
     updateUser,
+    deleteProfile,
+    openChat,
+    setOpenChat,
   };
 
   return (
