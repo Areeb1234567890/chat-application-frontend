@@ -2,6 +2,7 @@ import React from "react";
 import { Container } from "./DrawerStyles";
 import avatar from "../../../assets/images/avatar2.png";
 import Drawer from "@mui/material/Drawer";
+import { useChatContext } from "../../../context/chatContext";
 
 const ContactDets = () => {
   const [state, setState] = React.useState({
@@ -18,11 +19,12 @@ const ContactDets = () => {
 
     setState({ ...state, [anchor]: open });
   };
+  const { chatName } = useChatContext();
 
   return (
     <Container>
       <img src={avatar} alt="Image" onClick={toggleDrawer(anchor, true)} />
-      <span>Faizan Uni</span>
+      <span>{chatName}</span>
 
       <Drawer
         sx={{

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -7,7 +7,6 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const _token = sessionStorage.getItem("authUser");
   const { userId } = _token ? JSON.parse(_token) : {};
-  const [openChat, setOpenChat] = useState(false);
 
   const Login = async ({ data, navigate }) => {
     try {
@@ -118,8 +117,6 @@ export const AuthProvider = ({ children }) => {
     Logout,
     updateUser,
     deleteProfile,
-    openChat,
-    setOpenChat,
   };
 
   return (

@@ -2,10 +2,10 @@ import React from "react";
 import SideNav from "../../components/SideNav/SideNav.jsx";
 import Chat from "../../components/Chat/Chat.jsx";
 import DummyChat from "../../components/DummyChat/DummyChat.jsx";
-import { useAuthContext } from "../../context/authContext.js";
+import { useChatContext } from "../../context/chatContext.js";
 
 const Home = () => {
-  const { openChat } = useAuthContext();
+  const { openChat } = useChatContext();
 
   return (
     <div className="main">

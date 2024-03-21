@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Sidenav, Contacts, Wrapper } from "./SideStyles";
 import filter from "../../assets/images/filter.png";
 import avatar from "../../assets/images/avatar2.png";
-import { useAuthContext } from "../../context/authContext";
+import { useChatContext } from "../../context/chatContext";
 import UserBar from "../userBar/UserBar";
 
 const SideNav = () => {
   const [isIconClicked, setIsIconClicked] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
-  const { setOpenChat } = useAuthContext();
+  const { setOpenChat, setChatName } = useChatContext();
   const handleIconClick = () => {
     setIsIconClicked(!isIconClicked);
   };
@@ -53,6 +53,7 @@ const SideNav = () => {
                   onClick={() => {
                     handleContactClick(index);
                     setOpenChat(true);
+                    setChatName(data.name);
                   }}
                   key={index}
                 >

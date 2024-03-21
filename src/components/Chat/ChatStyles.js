@@ -12,6 +12,11 @@ export const ChatWrap = styled.div`
   .bg {
     width: 100%;
     height: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
     background-image: url(${(props) => props.image});
     background-size: contain;
     background-repeat: repeat;
@@ -29,6 +34,7 @@ export const Send = styled.div`
   min-height: 40px;
   padding: 8px 20px;
   background-color: #202c33;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -59,5 +65,72 @@ export const Send = styled.div`
   }
   .addIcon {
     width: 30px;
+  }
+`;
+
+export const ChatMain = styled.div`
+  z-index: 1;
+  width: 100%;
+  max-height: 79.5vh;
+  overflow-y: scroll;
+  position: relative;
+  padding: 15px 20px;
+
+  .sendCon {
+    width: 100%;
+    display: flex;
+    margin-top: 10px;
+    justify-content: flex-end;
+    .send {
+      padding: 7px 10px 15px;
+      border-radius: 4px;
+      background-color: #005c4b;
+      max-width: 50%;
+      position: relative;
+      h3 {
+        color: #dadada;
+        font-family: Roboto;
+        font-weight: 400;
+        font-size: 16px;
+        padding-right: 30px;
+      }
+      span {
+        color: #dadada;
+        font-family: Roboto;
+        position: absolute;
+        right: 5px;
+        bottom: 2px;
+        font-weight: 400;
+        font-size: 10px;
+      }
+    }
+  }
+  .recevingCon {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    .receive {
+      padding: 7px 10px 15px;
+      position: relative;
+      border-radius: 4px;
+      max-width: 50%;
+      background-color: #202c33;
+      h3 {
+        font-size: 16px;
+        color: #dadada;
+        font-family: Roboto;
+        font-weight: 400;
+        padding-right: 30px;
+      }
+      span {
+        color: #dadada;
+        font-family: Roboto;
+        position: absolute;
+        right: 5px;
+        bottom: 2px;
+        font-weight: 400;
+        font-size: 10px;
+      }
+    }
   }
 `;

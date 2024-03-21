@@ -7,10 +7,26 @@ import AddIcon from "../../../assets/images/add.png";
 import { Menus } from "./NavMenuStyle";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../../context/authContext";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 
 const NavMenu = () => {
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "30%",
+    bgcolor: "background.paper",
+    border: "0px",
+    boxShadow: 24,
+    p: 4,
+  };
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -27,13 +43,23 @@ const NavMenu = () => {
 
   return (
     <Menus>
-      <div className="imgDiv">
+      <div className="imgDiv" onClick={handleOpen}>
         <img
           src={AddIcon}
           alt="Icon"
           style={{ height: "20px", width: "20px" }}
         />
       </div>
+      <Modal
+        open={openModal}
+        onClose={handleModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <h3>this ois the moda;</h3>
+        </Box>
+      </Modal>
 
       <div
         className={`imgDiv ${open ? "hover" : ""}`}

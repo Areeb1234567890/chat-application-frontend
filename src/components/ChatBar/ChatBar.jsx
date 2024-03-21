@@ -35,6 +35,7 @@ const Sender = styled.div`
   height: 60px;
   display: flex;
   align-items: center;
+  box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.5);
   user-select: none;
   background-color: #202c33;
   justify-content: space-between;
