@@ -6,7 +6,7 @@ const DummyChat = () => {
   return (
     <Container>
       <img src={logo} alt="logo" />
-      <h1>Select a freind to start chat</h1>
+      <h1>Select a friend to start chat</h1>
     </Container>
   );
 };

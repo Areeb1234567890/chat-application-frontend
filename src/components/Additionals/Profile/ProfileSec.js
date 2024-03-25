@@ -141,6 +141,8 @@ const ProfileSec = () => {
     formData.append("file", data.file);
     await updateUser({ data: formData });
     setIsLoading(false);
+    setIsActive(false);
+    setIsOpen(false);
   };
   const RemoveProfile = async () => {
     removeModalClose();

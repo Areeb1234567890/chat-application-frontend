@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   const Register = async ({ data, navigate }) => {
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_Register_URL}`,
+        `${process.env.REACT_APP_REGISTER_URL}`,
         data
       );
       if (res) {
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         };
         sessionStorage.setItem("authUser", JSON.stringify(newAuthUserData));
         toast.success(res.data.msg);
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (error) {
       toast.error(error.response.data.msg);
@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
         };
         sessionStorage.setItem("authUser", JSON.stringify(newAuthUserData));
         toast.success(msg);
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (error) {
       toast.error(error.response.data.msg);

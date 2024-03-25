@@ -54,7 +54,6 @@ const Chat = () => {
       <ChatBar />
       <ChatWrap image={bg}>
         <div className="bg"></div>
-
         <ChatMain>
           {dummy &&
             dummy.map((data) => {
@@ -68,7 +67,6 @@ const Chat = () => {
                       </div>
                     </div>
                   )}
-
                   {data.type === "receiving" && (
                     <div className="recevingCon">
                       <div className="receive">
