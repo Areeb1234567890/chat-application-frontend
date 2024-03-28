@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
 import MenuIcon from "../../../assets/images/Menu.png";
 import AddIcon from "../../../assets/images/add.png";
-import { Menus } from "./NavMenuStyle";
+import { Menus, ModalInner } from "./NavMenuStyle";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../../context/authContext";
 import Box from "@mui/material/Box";
@@ -17,28 +17,40 @@ const NavMenu = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "30%",
-    bgcolor: "background.paper",
-    border: "0px",
+    height: "33%",
+    bgcolor: "#111B21",
+    border: "1px solid #dadada76",
     boxShadow: 24,
-    p: 4,
+    borderRadius: "12px",
+    padding: "10px 15px",
+    textAlign: "center",
   };
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const value = {
+    email: "",
+    message: "",
+  };
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
+  const navigate = useNavigate();
+  const { Logout } = useAuthContext();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const navigate = useNavigate();
-  const { Logout } = useAuthContext();
   const menuItemHoverStyle = {
     "&:hover": {
       backgroundColor: "#182229",
     },
+  };
+  const [addContact, setAddContact] = useState(value);
+  const inputHandler = (e) => {
+    const { name, value } = e.target;
+    setAddContact({ ...addContact, [name]: value });
   };
 
   return (
@@ -57,7 +69,26 @@ const NavMenu = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <h3>this ois the moda;</h3>
+          <ModalInner>
+            <h3>Add a new contact</h3>
+            <input
+              type="text"
+              placeholder="Enter email"
+              name="email"
+              onChange={(e) => {
+                inputHandler(e);
+              }}
+            />
+            <input
+              type="text"
+              name="message"
+              placeholder="Enter message"
+              onChange={(e) => {
+                inputHandler(e);
+              }}
+            />
+            <button>Send</button>
+          </ModalInner>
         </Box>
       </Modal>
 
