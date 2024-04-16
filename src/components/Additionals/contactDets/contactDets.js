@@ -19,11 +19,15 @@ const ContactDets = () => {
 
     setState({ ...state, [anchor]: open });
   };
-  const { chatName } = useChatContext();
+  const { chatName, chatImg } = useChatContext();
 
   return (
     <Container>
-      <img src={avatar} alt="Image" onClick={toggleDrawer(anchor, true)} />
+      <img
+        src={chatImg || avatar}
+        alt="Image"
+        onClick={toggleDrawer(anchor, true)}
+      />
       <span>{chatName}</span>
 
       <Drawer

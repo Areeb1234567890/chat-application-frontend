@@ -59,15 +59,14 @@ const Chat = () => {
             dummy.map((data) => {
               return (
                 <>
-                  {data.type === "sending" && (
+                  {data.type === "sending" ? (
                     <div className="sendCon">
                       <div className="send">
                         <h3>{data.message}</h3>
                         <span>{data.time}</span>
                       </div>
                     </div>
-                  )}
-                  {data.type === "receiving" && (
+                  ) : (
                     <div className="recevingCon">
                       <div className="receive">
                         <h3>{data.message}</h3>

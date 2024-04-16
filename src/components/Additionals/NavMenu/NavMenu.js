@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../../context/authContext";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { useContactContext } from "../../../context/contactContext";
 
 const NavMenu = () => {
   const style = {
@@ -36,6 +37,7 @@ const NavMenu = () => {
   const handleModalClose = () => setOpenModal(false);
   const navigate = useNavigate();
   const { Logout } = useAuthContext();
+  const { addContact } = useContactContext();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -47,10 +49,19 @@ const NavMenu = () => {
       backgroundColor: "#182229",
     },
   };
-  const [addContact, setAddContact] = useState(value);
+  const [addData, setAddContact] = useState(value);
   const inputHandler = (e) => {
     const { name, value } = e.target;
-    setAddContact({ ...addContact, [name]: value });
+    setAddContact({ ...addData, [name]: value });
+  };
+
+  const submitHandler = async () => {
+    try {
+      await addContact({ data: addData });
+      handleModalClose();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -87,7 +98,7 @@ const NavMenu = () => {
                 inputHandler(e);
               }}
             />
-            <button>Send</button>
+            <button onClick={() => submitHandler()}>Send</button>
           </ModalInner>
         </Box>
       </Modal>
