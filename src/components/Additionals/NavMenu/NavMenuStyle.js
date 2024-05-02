@@ -23,7 +23,7 @@ export const Menus = styled.div`
   }
 `;
 
-export const ModalInner = styled.div`
+export const ModalInner = styled.form`
   width: 100%;
   height: 100%;
   h3 {

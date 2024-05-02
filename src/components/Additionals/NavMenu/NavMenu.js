@@ -26,9 +26,12 @@ const NavMenu = () => {
     padding: "10px 15px",
     textAlign: "center",
   };
+  const _token = sessionStorage.getItem("authUser");
+  const { userId } = _token ? JSON.parse(_token) : {};
   const value = {
     email: "",
     message: "",
+    id: userId,
   };
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -55,7 +58,8 @@ const NavMenu = () => {
     setAddContact({ ...addData, [name]: value });
   };
 
-  const submitHandler = async () => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
     try {
       await addContact({ data: addData });
       handleModalClose();
@@ -80,12 +84,13 @@ const NavMenu = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <ModalInner>
+          <ModalInner onSubmit={(e) => submitHandler(e)}>
             <h3>Add a new contact</h3>
             <input
               type="text"
               placeholder="Enter email"
               name="email"
+              required
               onChange={(e) => {
                 inputHandler(e);
               }}
@@ -94,11 +99,12 @@ const NavMenu = () => {
               type="text"
               name="message"
               placeholder="Enter message"
+              required
               onChange={(e) => {
                 inputHandler(e);
               }}
             />
-            <button onClick={() => submitHandler()}>Send</button>
+            <button>Send</button>
           </ModalInner>
         </Box>
       </Modal>

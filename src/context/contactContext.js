@@ -1,35 +1,44 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-// import io from "socket.io-client";
-
+import { useSocket } from "./socketProvider";
+// import { io } from "socket.io-client";
 const ContactContext = createContext();
 
 export const ContactProvider = ({ children }) => {
-  const _token = sessionStorage.getItem("authUser");
-  const { userId } = _token ? JSON.parse(_token) : {};
   const [contacts, setContacts] = useState([]);
+  const socket = useSocket();
 
-  const addContact = async ({ data }) => {
-    try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_ADD_CONTACT_URL}/${userId}`,
-        data
-      );
-      toast.success(res.data.msg);
-    } catch (error) {
-      toast.error(error.response.data.msg);
-    }
+  useEffect(() => {
+    socket.on("updateContacts", (data) => {
+      toast.success(data.msg);
+      console.log(data.id);
+      // getContacts(data.id);
+    });
+
+    socket.on("addContactError", (error) => {
+      toast.error(error.msg);
+    });
+
+    return () => {
+      socket.off("addContactError");
+      socket.off("updateContacts");
+    };
+  }, [socket]);
+
+  const addContact = ({ data }) => {
+    console.log("this addContact is working", data);
+    socket.emit("addContact", data);
   };
 
-  const getContacts = async () => {
+  const getContacts = async (id) => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_GET_CONTACT_URL}/${userId}`
+        `${process.env.REACT_APP_GET_CONTACT_URL}/${id}`
       );
       setContacts(res.data.contacts);
     } catch (error) {
-      toast.error(error.response.data.msg);
+      // toast.error(error.response.data.msg);
     }
   };
 

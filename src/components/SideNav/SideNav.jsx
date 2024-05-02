@@ -12,11 +12,13 @@ const SideNav = () => {
   const [searchUser, setSearchUser] = useState("");
   const { setOpenChat, setChatName, setChatImg } = useChatContext();
   const { getContacts, contacts } = useContactContext();
+  const _token = sessionStorage.getItem("authUser");
+  const { userId } = _token ? JSON.parse(_token) : {};
 
   useEffect(() => {
     const fetch = async () => {
       if (contacts.length === 0) {
-        await getContacts();
+        await getContacts(userId);
       }
     };
     fetch();
