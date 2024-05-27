@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Sidenav, Contacts, Wrapper } from "./SideStyles";
-import filter from "../../assets/images/filter.png";
 import avatar from "../../assets/images/avatar2.png";
 import { useChatContext } from "../../context/chatContext";
 import UserBar from "../userBar/UserBar";
 import { useContactContext } from "../../context/contactContext";
 
 const SideNav = () => {
-  const [isIconClicked, setIsIconClicked] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const [searchUser, setSearchUser] = useState("");
-  const { setOpenChat, setChatName, setChatImg } = useChatContext();
+  const { setOpenChat, setContactData, getChat } = useChatContext();
   const { getContacts, contacts } = useContactContext();
   const _token = sessionStorage.getItem("authUser");
   const { userId } = _token ? JSON.parse(_token) : {};
@@ -24,26 +22,27 @@ const SideNav = () => {
     fetch();
   }, []);
 
-  const handleIconClick = () => {
-    setIsIconClicked(!isIconClicked);
-  };
-  const handleContactClick = (index) => {
+  const handleContactClick = (index, data) => {
     setActiveIndex(index === activeIndex ? null : index);
+    setOpenChat(index === activeIndex ? false : true);
+    setContactData(data);
+    getChat(data.chat_id);
   };
-  const sample = [
-    {
-      name: "Faizan uni",
-      Image: avatar,
-    },
-    {
-      name: "Asif uni",
-      Image: avatar,
-    },
-    {
-      name: "Ibrar uni",
-      Image: avatar,
-    },
-  ];
+
+  const closeChat = (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpenChat(false);
+      setActiveIndex(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", closeChat);
+    return () => {
+      document.removeEventListener("keydown", closeChat);
+    };
+  }, []);
 
   return (
     <Wrapper>
@@ -58,17 +57,14 @@ const SideNav = () => {
             }}
             value={searchUser}
           />
-          <div
-            className={`IconCon ${isIconClicked ? "active" : ""}`}
-            onClick={handleIconClick}
-          >
-            <img className="Icon" src={filter} alt="filterIcon" />
-          </div>
         </div>
 
         <Contacts>
-          {contacts && contacts.length > 0
-            ? contacts
+          {contacts && contacts.length > 0 ? (
+            contacts.filter((user) =>
+              user.name.toLowerCase().includes(searchUser.toLowerCase())
+            ).length > 0 ? (
+              contacts
                 .filter((user) =>
                   user.name.toLowerCase().includes(searchUser.toLowerCase())
                 )
@@ -78,12 +74,7 @@ const SideNav = () => {
                       className={`Contact ${
                         index === activeIndex ? "active" : ""
                       }`}
-                      onClick={() => {
-                        handleContactClick(index);
-                        setOpenChat(true);
-                        setChatName(data.name);
-                        setChatImg(data.profileImage);
-                      }}
+                      onClick={() => handleContactClick(index, data)}
                       key={index}
                     >
                       <div className="Image">
@@ -94,12 +85,21 @@ const SideNav = () => {
                           <h3>{data.name}</h3>
                           <span>Yesterday</span>
                         </div>
-                        <span>Yar bat sun subha nasahta karny chaly</span>
+                        <span>{data.message}</span>
                       </div>
                     </div>
                   );
                 })
-            : ""}
+            ) : (
+              <div className="noUSer">
+                <span>No chats or contact found</span>
+              </div>
+            )
+          ) : (
+            <div className="noUSer">
+              <span>No chats or contact found</span>
+            </div>
+          )}
         </Contacts>
       </Sidenav>
     </Wrapper>

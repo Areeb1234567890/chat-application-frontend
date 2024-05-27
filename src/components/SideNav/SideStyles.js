@@ -4,7 +4,6 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 30%;
-
 `;
 
 export const Sidenav = styled.div`
@@ -18,18 +17,20 @@ export const Sidenav = styled.div`
   .Actions {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
     padding: 10px 15px 30px;
     input {
-      width: 90%;
-      height: 35px;
+      width: 100%;
+      height: 40px;
       background-color: #202c33;
       border: none;
       outline: none;
       border-radius: 10px;
       padding: 0 20px;
       color: #dadada;
+      font-size: 15px;
+    }
+    input::placeholder {
+      color: #8696a0;
       font-size: 15px;
     }
     .IconCon {
@@ -55,6 +56,17 @@ export const Contacts = styled.div`
   width: 100%;
   height: calc(100% - 60px);
   overflow-y: scroll;
+  .noUSer {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    span {
+      color: #8696a0;
+      font-size: 15px;
+    }
+  }
   .Contact {
     display: flex;
     align-items: center;

@@ -48,6 +48,8 @@ const NavMenu = () => {
     setAnchorEl(null);
   };
   const menuItemHoverStyle = {
+    borderRadius: "10px",
+    height: "40px",
     "&:hover": {
       backgroundColor: "#182229",
     },
@@ -129,8 +131,12 @@ const NavMenu = () => {
         }}
         sx={{
           "& .MuiPaper-root": {
-            backgroundColor: "#222E35",
+            width: "150px",
+            transform: "unset !important",
+            backgroundColor: "#233138",
             color: "#dadada",
+            borderRadius: "15px",
+            padding: "5px",
           },
         }}
         anchorEl={anchorEl}

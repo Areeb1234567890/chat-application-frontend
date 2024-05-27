@@ -16,6 +16,17 @@ export const Form = styled.form`
   border-radius: 10px;
   text-align: center;
   padding: 30px 20px;
+  .passwordCon {
+    position: relative;
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      user-select: none;
+      top: 40%;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
 
   #hr {
     all: initial !important;

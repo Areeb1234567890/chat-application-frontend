@@ -1,19 +1,30 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useSocket } from "./socketProvider";
-// import { io } from "socket.io-client";
 const ContactContext = createContext();
 
 export const ContactProvider = ({ children }) => {
+  const _token = sessionStorage.getItem("authUser");
+  const { userId } = _token ? JSON.parse(_token) : {};
   const [contacts, setContacts] = useState([]);
   const socket = useSocket();
 
   useEffect(() => {
-    socket.on("updateContacts", (data) => {
+    if (userId) {
+      socket.emit("userId", userId);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    socket.on("updateContactsReceiver", (data) => {
       toast.success(data.msg);
-      console.log(data.id);
-      // getContacts(data.id);
+      getContacts(data.id);
+    });
+
+    socket.on("updateContactsSender", (data) => {
+      toast.success(data.msg);
+      getContacts(data.id);
     });
 
     socket.on("addContactError", (error) => {
@@ -22,12 +33,12 @@ export const ContactProvider = ({ children }) => {
 
     return () => {
       socket.off("addContactError");
-      socket.off("updateContacts");
+      socket.off("updateContactsReceiver");
+      socket.off("updateContactsSender");
     };
   }, [socket]);
 
   const addContact = ({ data }) => {
-    console.log("this addContact is working", data);
     socket.emit("addContact", data);
   };
 
@@ -39,6 +50,7 @@ export const ContactProvider = ({ children }) => {
       setContacts(res.data.contacts);
     } catch (error) {
       // toast.error(error.response.data.msg);
+      console.log(error);
     }
   };
 

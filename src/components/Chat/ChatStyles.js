@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
+  position: relative;
   width: 70%;
 `;
 
@@ -39,16 +40,22 @@ export const Send = styled.div`
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
+
   .TextFeild {
     width: 90%;
     border: none;
     outline: none;
+    font-size: 15px;
     height: 45px;
     font-family: Roboto;
     border-radius: 10px;
     background-color: #2a3942;
     color: #dadada;
     padding: 0 10px;
+  }
+  .TextFeild::placeholder {
+    color: #8696a0;
+    font-size: 15px;
   }
   .imgCon {
     user-select: none;
@@ -63,7 +70,17 @@ export const Send = styled.div`
       background-color: #dadada33;
     }
   }
+  .active {
+    background-color: #dadada33;
+    .addIcon {
+      transform: rotate(135deg);
+    }
+  }
+  .activate {
+    background-color: #dadada33;
+  }
   .addIcon {
+    transition: transform 0.3s ease-in-out;
     width: 30px;
   }
 `;
@@ -107,6 +124,7 @@ export const ChatMain = styled.div`
   }
   .recevingCon {
     width: 100%;
+    margin-top: 10px;
     display: flex;
     justify-content: flex-start;
     .receive {
@@ -133,4 +151,19 @@ export const ChatMain = styled.div`
       }
     }
   }
+`;
+
+export const Image = styled.img`
+  height: 25px;
+  width: 25px;
+  margin-right: 10px;
+`;
+
+export const Input = styled.input`
+  opacity: 0.000001;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `;

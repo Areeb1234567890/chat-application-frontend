@@ -13,7 +13,12 @@ const Login = () => {
   };
   const [data, setData] = useState(value);
   const [isLoading, setIsLoading] = useState(Boolean);
+  const [showPassword, setShowPassword] = useState(false);
   const { Login } = useAuthContext();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -44,12 +49,17 @@ const Login = () => {
           placeholder="Enter your email"
           onChange={(e) => inputHandler(e)}
         />
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          onChange={(e) => inputHandler(e)}
-        />
+        <div className="passwordCon">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Enter your password"
+            onChange={(e) => inputHandler(e)}
+          />
+          <span onClick={togglePasswordVisibility} className="toggle-password">
+            {showPassword ? "🔓" : "🔒"}
+          </span>
+        </div>
         <Button>Login</Button>
         <Hr />
         <div className="redirect">
