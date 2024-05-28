@@ -78,10 +78,21 @@ export const Send = styled.div`
   }
   .activate {
     background-color: #dadada33;
+    .addIcon {
+      display: none;
+    }
+    .cancelIcon {
+      display: flex;
+    }
   }
   .addIcon {
     transition: transform 0.3s ease-in-out;
     width: 30px;
+  }
+  .cancelIcon {
+    display: none;
+    transition: display 0.5s ease-in-out;
+    width: 25px;
   }
 `;
 
@@ -100,10 +111,17 @@ export const ChatMain = styled.div`
     justify-content: flex-end;
     .send {
       padding: 7px 10px 15px;
-      border-radius: 4px;
+      border-radius: 6px;
       background-color: #005c4b;
       max-width: 50%;
       position: relative;
+      .image {
+        max-width: 100%;
+        max-height: 100%;
+        padding: -16px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
       h3 {
         color: #dadada;
         font-family: Roboto;
@@ -133,6 +151,13 @@ export const ChatMain = styled.div`
       border-radius: 4px;
       max-width: 50%;
       background-color: #202c33;
+      .image {
+        max-width: 100%;
+        max-height: 100%;
+        padding: -12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
       h3 {
         font-size: 16px;
         color: #dadada;

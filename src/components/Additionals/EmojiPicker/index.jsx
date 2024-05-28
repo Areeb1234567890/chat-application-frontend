@@ -33,5 +33,8 @@ const StyledEmojiPicker = styled(EmojiPicker)`
   [class^="epr"] {
     --epr-picker-border-color: none !important;
     --epr-category-label-bg-color: #202c33 !important;
+    --epr-search-input-bg-color: #2a3942 !important;
+    --epr-search-input-bg-color-active: #2a3942 !important;
+    --epr-preview-border-color: none !important;
   }
 `;

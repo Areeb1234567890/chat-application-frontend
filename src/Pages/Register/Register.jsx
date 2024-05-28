@@ -18,7 +18,7 @@ const Register = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (data.value != "") {
+    if (data.value !== "") {
       navigate(`/details`, {
         replace: true,
         state: {

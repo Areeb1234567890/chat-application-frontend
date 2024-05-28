@@ -47,8 +47,13 @@ export const ChatProvider = ({ children }) => {
     socket.emit("sendMessage", data);
   };
 
+  const sendCameraCapture = (data) => {
+    socket.emit("sendCapture", data);
+  };
+
   const contextValue = {
     setContactData,
+    sendCameraCapture,
     contactData,
     sendMessage,
     openChat,

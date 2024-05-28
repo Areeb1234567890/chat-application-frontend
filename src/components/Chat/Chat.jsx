@@ -12,6 +12,7 @@ import person from "../../assets/images/person.png";
 import MenuItem from "@mui/material/MenuItem";
 import micIcon from "../../assets/images/mic.png";
 import emojiIcon from "../../assets/images/emojiIcon.png";
+import cancelIcon from "../../assets/images/cancel.png";
 import ChatBar from "../ChatBar/ChatBar";
 import { useChatContext } from "../../context/chatContext";
 import { toast } from "react-toastify";
@@ -90,6 +91,13 @@ const Chat = () => {
                     {data.senderId === userId ? (
                       <div className="sendCon" key={index}>
                         <div className="send">
+                          {data.attachments && (
+                            <img
+                              className="image"
+                              src={data.attachments.url}
+                              alt="image"
+                            />
+                          )}
                           <h3>{data.message}</h3>
                           <span>{format(new Date(data.time), "HH:mm aa")}</span>
                         </div>
@@ -97,6 +105,13 @@ const Chat = () => {
                     ) : (
                       <div className="recevingCon" key={index}>
                         <div className="receive">
+                          {data.attachments && (
+                            <img
+                              className="image"
+                              src={data.attachments.url}
+                              alt="image"
+                            />
+                          )}
                           <h3>{data.message}</h3>
                           <span>{format(new Date(data.time), "HH:mm aa")}</span>
                         </div>
@@ -173,6 +188,7 @@ const Chat = () => {
             onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
           >
             <img className="addIcon" src={emojiIcon} alt="addIcon" />
+            <img className="cancelIcon" src={cancelIcon} alt="addIcon" />
           </div>
 
           <div
@@ -202,7 +218,14 @@ const Chat = () => {
         </Send>
       </ChatWrap>
 
-      {cameraOpen && <WebcamCapture setCameraOpen={setCameraOpen} />}
+      {cameraOpen && (
+        <WebcamCapture
+          receiverId={messageToSend.receiverId}
+          chatId={messageToSend.chatId}
+          userId={userId}
+          setCameraOpen={setCameraOpen}
+        />
+      )}
     </Wrapper>
   );
 };

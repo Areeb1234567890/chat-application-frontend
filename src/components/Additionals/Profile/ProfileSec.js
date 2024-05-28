@@ -116,7 +116,7 @@ const ProfileSec = () => {
   };
   const inputHandler = (e) => {
     const { name } = e.target;
-    if (name == "file") {
+    if (name === "file") {
       const file = e.target.files[0];
       setData({ ...data, [name]: file });
       const reader = new FileReader();

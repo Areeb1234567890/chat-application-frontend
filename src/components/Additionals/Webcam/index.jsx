@@ -1,22 +1,54 @@
-import React, { useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import cancel from "../../../assets/images/cancel.png";
 import returnIcon from "../../../assets/images/return.png";
 import SendIcon from "../../../assets/images/SendIcon.png";
 import { Container, Top } from "./webCamStyles";
 import camera from "../../../assets/images/camera.png";
+import { useChatContext } from "../../../context/chatContext";
 
-const WebcamCapture = ({ setCameraOpen }) => {
+const WebcamCapture = ({ setCameraOpen, userId, chatId, receiverId }) => {
   const webcamRef = useRef(null);
   const [openImage, setOpenImage] = useState(false);
   const [image, setImage] = useState(null);
+  const { sendCameraCapture } = useChatContext();
+  const [dataToSend, setDataToSend] = useState({
+    file: image,
+    senderId: userId,
+    message: "",
+    chatId,
+    receiverId,
+  });
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImage(imageSrc);
     setOpenImage(true);
   }, [webcamRef]);
-  console.log(image, "image you capture");
+
+  useEffect(() => {
+    setDataToSend((prev) => ({
+      ...prev,
+      file: image,
+    }));
+  }, [image]);
+
+  const inputHandler = (e) => {
+    const { name, value } = e.target;
+    setDataToSend({ ...dataToSend, [name]: value });
+  };
+
+  const requestMessage = () => {
+    sendCameraCapture(dataToSend);
+    setCameraOpen(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      requestMessage();
+    }
+  };
 
   return (
     <>
@@ -71,8 +103,16 @@ const WebcamCapture = ({ setCameraOpen }) => {
             <div className="capturedCon">
               <img src={image} alt="captured image" />
             </div>
-            <div className="btnCon">
-              <button>
+            <div className="Feild">
+              <input
+                className="TextFeild"
+                type="text"
+                name="message"
+                onChange={inputHandler}
+                onKeyDown={handleKeyDown}
+                placeholder="Type a message..."
+              />
+              <button onClick={() => requestMessage()}>
                 <img src={SendIcon} alt="capture" />
               </button>
             </div>
