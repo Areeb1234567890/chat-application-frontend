@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ChatMain, ChatWrap, Send, Wrapper, Image, Input } from "./ChatStyles";
+import { ChatWrap, Send, Wrapper, Image, Input } from "./ChatStyles";
 import bg from "../../assets/images/chat-bg.png";
 import addIcon from "../../assets/images/add.png";
 import sendIcon from "../../assets/images/SendIcon.png";
@@ -16,9 +16,9 @@ import cancelIcon from "../../assets/images/cancel.png";
 import ChatBar from "../ChatBar/ChatBar";
 import { useChatContext } from "../../context/chatContext";
 import { toast } from "react-toastify";
-import { format } from "date-fns";
 import WebcamCapture from "../Additionals/Webcam/index";
 import CustomEmojiPicker from "../Additionals/EmojiPicker/index";
+import MessageHandler from "../Additionals/MessageHandler/MessageHandler";
 
 const Chat = () => {
   const { message, sendMessage, contactData } = useChatContext();
@@ -29,6 +29,7 @@ const Chat = () => {
     chatId: contactData.chat_id,
     receiverId: contactData.contact_id,
     message: "",
+    file: "",
   });
   const [anchorEl, setAnchorEl] = useState(null);
   const [cameraOpen, setCameraOpen] = useState(false);
@@ -58,7 +59,12 @@ const Chat = () => {
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
-    setMessageToSend({ ...messageToSend, [name]: value });
+    if (name === "file") {
+      const file = e.target.files[0];
+      setMessageToSend({ ...messageToSend, [name]: file });
+    } else {
+      setMessageToSend({ ...messageToSend, [name]: value });
+    }
   };
 
   const requestMessage = () => {
@@ -82,46 +88,8 @@ const Chat = () => {
     <Wrapper>
       <ChatBar />
       <ChatWrap image={bg}>
-        <div className="bg"></div>
-        <ChatMain>
-          {message && message.length > 0
-            ? message.map((data, index) => {
-                return (
-                  <>
-                    {data.senderId === userId ? (
-                      <div className="sendCon" key={index}>
-                        <div className="send">
-                          {data.attachments && (
-                            <img
-                              className="image"
-                              src={data.attachments.url}
-                              alt="image"
-                            />
-                          )}
-                          <h3>{data.message}</h3>
-                          <span>{format(new Date(data.time), "HH:mm aa")}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="recevingCon" key={index}>
-                        <div className="receive">
-                          {data.attachments && (
-                            <img
-                              className="image"
-                              src={data.attachments.url}
-                              alt="image"
-                            />
-                          )}
-                          <h3>{data.message}</h3>
-                          <span>{format(new Date(data.time), "HH:mm aa")}</span>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                );
-              })
-            : ""}
-        </ChatMain>
+        <div className="bg" />
+        <MessageHandler message={message} userId={userId} />
         {emojiPickerOpen && (
           <CustomEmojiPicker
             onSelectEmoji={(emoji) =>
@@ -164,6 +132,12 @@ const Chat = () => {
             <MenuItem onClick={handleClose} sx={menuItemHoverStyle}>
               <Image src={photo} alt="img" className="MEnuImg" />
               Photos & videos
+              <Input
+                name="file"
+                onChange={inputHandler}
+                accept=".jpg,.jpeg,.png,.gif,.mp4,.mkv,.avi"
+                type="file"
+              />
             </MenuItem>
 
             <MenuItem
