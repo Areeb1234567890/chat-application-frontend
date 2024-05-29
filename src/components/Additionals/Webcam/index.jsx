@@ -116,6 +116,7 @@ const WebcamCapture = ({ setCameraOpen, userId, chatId, receiverId }) => {
         ) : (
           <FilePreview
             displayFile={displayImage}
+            isTop={false}
             inputHandler={inputHandler}
             handleKeyDown={handleKeyDown}
             requestMessage={requestMessage}

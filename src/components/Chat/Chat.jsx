@@ -20,6 +20,7 @@ import WebcamCapture from "../Additionals/Webcam/index";
 import CustomEmojiPicker from "../Additionals/EmojiPicker/index";
 import MessageHandler from "../Additionals/MessageHandler/MessageHandler";
 import FilePreview from "../Additionals/FilePreview/FilePreview";
+import { getFileType } from "../../services/getFileType";
 
 const Chat = () => {
   const { message, sendMessage, contactData } = useChatContext();
@@ -35,6 +36,8 @@ const Chat = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPreview, setOpenPreview] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [fileType, setFileType] = useState("");
+  const [displayfile, setDisplayFile] = useState(null);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -67,12 +70,14 @@ const Chat = () => {
     const file = e.target.files[0];
     setMessageToSend((prev) => ({ ...prev, file }));
     handleClose();
+    getFileType(setFileType, setDisplayFile, file);
     setOpenPreview(true);
   };
 
   const requestMessage = () => {
     if (messageToSend.file !== "") {
-      sendMessage(messageToSend);
+      // sendMessage(messageToSend);
+      console.log(messageToSend);
       setMessageToSend((prev) => ({ ...prev, message: "", file: "" }));
       setOpenPreview(false);
     } else {
@@ -98,10 +103,14 @@ const Chat = () => {
 
       {openPreview ? (
         <FilePreview
-          displayFile={messageToSend.file}
+          displayFile={displayfile}
+          setDisplayFile={setDisplayFile}
           inputHandler={inputHandler}
+          setOpenPreview={setOpenPreview}
           requestMessage={requestMessage}
           handleKeyDown={handleKeyDown}
+          isTop={true}
+          fileType={fileType}
         />
       ) : (
         <ChatWrap image={bg}>
@@ -119,7 +128,7 @@ const Chat = () => {
               }
             />
           )}
-
+          
           <Send>
             <Menu
               id="fade-menu"
@@ -146,7 +155,12 @@ const Chat = () => {
               <MenuItem sx={menuItemHoverStyle}>
                 <Image src={Document} alt="img" />
                 Document
-                <Input onChange={fileHandler} name="file" type="file" />
+                <Input
+                  accept=".docx,.pdf,.xml,.txt,.doc,.ppt,.pptx,.zip,.rar"
+                  onChange={fileHandler}
+                  name="file"
+                  type="file"
+                />
               </MenuItem>
 
               <MenuItem sx={menuItemHoverStyle}>
@@ -184,7 +198,6 @@ const Chat = () => {
               <img className="addIcon" src={emojiIcon} alt="addIcon" />
               <img className="cancelIcon" src={cancelIcon} alt="addIcon" />
             </div>
-
             <div
               className={`imgCon ${anchorEl !== null ? "active" : ""}`}
               onClick={handleClick}
