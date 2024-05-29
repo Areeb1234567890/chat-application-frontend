@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import WebcamCapture from "../Additionals/Webcam/index";
 import CustomEmojiPicker from "../Additionals/EmojiPicker/index";
 import MessageHandler from "../Additionals/MessageHandler/MessageHandler";
+import FilePreview from "../Additionals/FilePreview/FilePreview";
 
 const Chat = () => {
   const { message, sendMessage, contactData } = useChatContext();
@@ -32,6 +33,7 @@ const Chat = () => {
     file: "",
   });
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openPreview, setOpenPreview] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const open = Boolean(anchorEl);
@@ -59,24 +61,30 @@ const Chat = () => {
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
-    if (name === "file") {
-      const file = e.target.files[0];
-      setMessageToSend({ ...messageToSend, [name]: file });
-    } else {
-      setMessageToSend({ ...messageToSend, [name]: value });
-    }
+    setMessageToSend({ ...messageToSend, [name]: value });
+  };
+  const fileHandler = (e) => {
+    const file = e.target.files[0];
+    setMessageToSend((prev) => ({ ...prev, file }));
+    handleClose();
+    setOpenPreview(true);
   };
 
   const requestMessage = () => {
-    const trimmedMessage = messageToSend.message.trim();
-    if (trimmedMessage !== "") {
-      sendMessage({ ...messageToSend, message: trimmedMessage });
-      setMessageToSend((prev) => ({ ...prev, message: "" }));
+    if (messageToSend.file !== "") {
+      sendMessage(messageToSend);
+      setMessageToSend((prev) => ({ ...prev, message: "", file: "" }));
+      setOpenPreview(false);
     } else {
-      toast.error("Can't send an empty message");
+      const trimmedMessage = messageToSend.message.trim();
+      if (trimmedMessage !== "") {
+        sendMessage({ ...messageToSend, message: trimmedMessage });
+        setMessageToSend((prev) => ({ ...prev, message: "" }));
+      } else {
+        toast.error("Can't send an empty message");
+      }
     }
   };
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -87,110 +95,123 @@ const Chat = () => {
   return (
     <Wrapper>
       <ChatBar />
-      <ChatWrap image={bg}>
-        <div className="bg" />
-        <MessageHandler message={message} userId={userId} />
-        {emojiPickerOpen && (
-          <CustomEmojiPicker
-            onSelectEmoji={(emoji) =>
-              setMessageToSend((prev) => ({
-                ...prev,
-                message: prev.message + emoji,
-              }))
-            }
-          />
-        )}
-        <Send>
-          <Menu
-            id="fade-menu"
-            MenuListProps={{
-              "aria-labelledby": "fade-button",
-            }}
-            sx={{
-              "& .MuiPaper-root": {
-                top: "unset !important",
-                bottom: "80px",
-                transform: "unset !important",
-                backgroundColor: "#233138",
-                color: "#dadada",
-                borderRadius: "15px",
-                padding: "5px",
-                // width: "200px",
-              },
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            TransitionComponent={Fade}
-          >
-            <MenuItem onClick={handleClose} sx={menuItemHoverStyle}>
-              <Image src={Document} alt="img" />
-              Document
-              <Input name="file" type="file" />
-            </MenuItem>
 
-            <MenuItem onClick={handleClose} sx={menuItemHoverStyle}>
-              <Image src={photo} alt="img" className="MEnuImg" />
-              Photos & videos
-              <Input
-                name="file"
-                onChange={inputHandler}
-                accept=".jpg,.jpeg,.png,.gif,.mp4,.mkv,.avi"
-                type="file"
-              />
-            </MenuItem>
+      {openPreview ? (
+        <FilePreview
+          displayFile={messageToSend.file}
+          inputHandler={inputHandler}
+          requestMessage={requestMessage}
+          handleKeyDown={handleKeyDown}
+        />
+      ) : (
+        <ChatWrap image={bg}>
+          <div className="bg" onClick={() => setEmojiPickerOpen(false)} />
 
-            <MenuItem
-              sx={menuItemHoverStyle}
-              onClick={() => {
-                setCameraOpen(true);
-                handleClose();
-              }}
-            >
-              <Image src={camerared} alt="img" className="MEnuImg" />
-              Camera
-            </MenuItem>
+          <MessageHandler message={message} userId={userId} />
 
-            <MenuItem sx={menuItemHoverStyle}>
-              <Image src={person} alt="img" className="MEnuImg" />
-              Contact
-            </MenuItem>
-          </Menu>
-
-          <div
-            className={`imgCon ${emojiPickerOpen ? "activate" : ""}`}
-            onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
-          >
-            <img className="addIcon" src={emojiIcon} alt="addIcon" />
-            <img className="cancelIcon" src={cancelIcon} alt="addIcon" />
-          </div>
-
-          <div
-            className={`imgCon ${anchorEl !== null ? "active" : ""}`}
-            onClick={handleClick}
-          >
-            <img className="addIcon" src={addIcon} alt="addIcon" />
-          </div>
-          <input
-            className="TextFeild"
-            type="text"
-            value={messageToSend.message}
-            name="message"
-            onChange={(e) => inputHandler(e)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
-          />
-          {messageToSend.message !== "" ? (
-            <div className="imgCon" onClick={() => requestMessage()}>
-              <img className="addIcon" src={sendIcon} alt="addIcon" />
-            </div>
-          ) : (
-            <div className="imgCon">
-              <img className="addIcon" src={micIcon} alt="addIcon" />
-            </div>
+          {emojiPickerOpen && (
+            <CustomEmojiPicker
+              onSelectEmoji={(emoji) =>
+                setMessageToSend((prev) => ({
+                  ...prev,
+                  message: prev.message + emoji,
+                }))
+              }
+            />
           )}
-        </Send>
-      </ChatWrap>
+
+          <Send>
+            <Menu
+              id="fade-menu"
+              MenuListProps={{
+                "aria-labelledby": "fade-button",
+              }}
+              sx={{
+                "& .MuiPaper-root": {
+                  top: "unset !important",
+                  bottom: "80px",
+                  transform: "unset !important",
+                  backgroundColor: "#233138",
+                  color: "#dadada",
+                  borderRadius: "15px",
+                  padding: "5px",
+                  // width: "200px",
+                },
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+            >
+              <MenuItem sx={menuItemHoverStyle}>
+                <Image src={Document} alt="img" />
+                Document
+                <Input onChange={fileHandler} name="file" type="file" />
+              </MenuItem>
+
+              <MenuItem sx={menuItemHoverStyle}>
+                <Image src={photo} alt="img" className="MEnuImg" />
+                Photos & videos
+                <Input
+                  name="file"
+                  onChange={(e) => fileHandler(e)}
+                  accept=".jpg,.jpeg,.png,.gif,.mp4,.mkv,.avi"
+                  type="file"
+                />
+              </MenuItem>
+
+              <MenuItem
+                sx={menuItemHoverStyle}
+                onClick={() => {
+                  setCameraOpen(true);
+                  handleClose();
+                }}
+              >
+                <Image src={camerared} alt="img" className="MEnuImg" />
+                Camera
+              </MenuItem>
+
+              <MenuItem sx={menuItemHoverStyle}>
+                <Image src={person} alt="img" className="MEnuImg" />
+                Contact
+              </MenuItem>
+            </Menu>
+
+            <div
+              className={`imgCon ${emojiPickerOpen ? "activate" : ""}`}
+              onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
+            >
+              <img className="addIcon" src={emojiIcon} alt="addIcon" />
+              <img className="cancelIcon" src={cancelIcon} alt="addIcon" />
+            </div>
+
+            <div
+              className={`imgCon ${anchorEl !== null ? "active" : ""}`}
+              onClick={handleClick}
+            >
+              <img className="addIcon" src={addIcon} alt="addIcon" />
+            </div>
+            <input
+              className="TextFeild"
+              type="text"
+              value={messageToSend.message}
+              name="message"
+              onChange={(e) => inputHandler(e)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type a message..."
+            />
+            {messageToSend.message !== "" ? (
+              <div className="imgCon" onClick={() => requestMessage()}>
+                <img className="addIcon" src={sendIcon} alt="addIcon" />
+              </div>
+            ) : (
+              <div className="imgCon">
+                <img className="addIcon" src={micIcon} alt="addIcon" />
+              </div>
+            )}
+          </Send>
+        </ChatWrap>
+      )}
 
       {cameraOpen && (
         <WebcamCapture

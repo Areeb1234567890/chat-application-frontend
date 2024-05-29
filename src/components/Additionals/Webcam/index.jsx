@@ -2,15 +2,16 @@ import React, { useRef, useCallback, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import cancel from "../../../assets/images/cancel.png";
 import returnIcon from "../../../assets/images/return.png";
-import SendIcon from "../../../assets/images/SendIcon.png";
 import { Container, Top } from "./webCamStyles";
 import camera from "../../../assets/images/camera.png";
 import { useChatContext } from "../../../context/chatContext";
+import FilePreview from "../FilePreview/FilePreview";
 
 const WebcamCapture = ({ setCameraOpen, userId, chatId, receiverId }) => {
   const webcamRef = useRef(null);
   const [openImage, setOpenImage] = useState(false);
   const [image, setImage] = useState(null);
+  const [displayImage, setDisplayImage] = useState(null);
   const { sendCameraCapture } = useChatContext();
   const [dataToSend, setDataToSend] = useState({
     file: image,
@@ -20,9 +21,23 @@ const WebcamCapture = ({ setCameraOpen, userId, chatId, receiverId }) => {
     receiverId,
   });
 
+  const base64ToFile = (base64, filename) => {
+    const arr = base64.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
-    setImage(imageSrc);
+    setDisplayImage(imageSrc);
+    const file = base64ToFile(imageSrc, "captured_image.png");
+    setImage(file);
     setOpenImage(true);
   }, [webcamRef]);
 
@@ -99,24 +114,12 @@ const WebcamCapture = ({ setCameraOpen, userId, chatId, receiverId }) => {
             </div>
           </>
         ) : (
-          <>
-            <div className="capturedCon">
-              <img src={image} alt="captured image" />
-            </div>
-            <div className="Feild">
-              <input
-                className="TextFeild"
-                type="text"
-                name="message"
-                onChange={inputHandler}
-                onKeyDown={handleKeyDown}
-                placeholder="Type a message..."
-              />
-              <button onClick={() => requestMessage()}>
-                <img src={SendIcon} alt="capture" />
-              </button>
-            </div>
-          </>
+          <FilePreview
+            displayFile={displayImage}
+            inputHandler={inputHandler}
+            handleKeyDown={handleKeyDown}
+            requestMessage={requestMessage}
+          />
         )}
       </Container>
     </>
