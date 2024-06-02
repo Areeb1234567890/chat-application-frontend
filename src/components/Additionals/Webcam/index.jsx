@@ -12,7 +12,7 @@ const WebcamCapture = ({ setCameraOpen, userId, chatId, receiverId }) => {
   const [openImage, setOpenImage] = useState(false);
   const [image, setImage] = useState(null);
   const [displayImage, setDisplayImage] = useState(null);
-  const { sendCameraCapture } = useChatContext();
+  const { sendMessage } = useChatContext();
   const [dataToSend, setDataToSend] = useState({
     file: image,
     senderId: userId,
@@ -54,7 +54,7 @@ const WebcamCapture = ({ setCameraOpen, userId, chatId, receiverId }) => {
   };
 
   const requestMessage = () => {
-    sendCameraCapture(dataToSend);
+    sendMessage(dataToSend);
     setCameraOpen(false);
   };
 

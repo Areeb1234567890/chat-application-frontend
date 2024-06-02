@@ -8,6 +8,7 @@ const ChatContext = createContext();
 export const ChatProvider = ({ children }) => {
   const [openChat, setOpenChat] = useState(false);
   const [contactData, setContactData] = useState();
+  const [isTyping, setIsTyping] = useState(false);
   const [message, setMessage] = useState({});
   const socket = useSocket();
 
@@ -15,6 +16,9 @@ export const ChatProvider = ({ children }) => {
     socket.on("updateMessageReceiver", (data) => {
       getChat(data.id);
     });
+
+    socket.on("Sendertyping", () => setIsTyping(true));
+    socket.on("stopSendertyping", () => setIsTyping(false));
 
     socket.on("updateMessageSender", (data) => {
       getChat(data.id);
@@ -28,6 +32,8 @@ export const ChatProvider = ({ children }) => {
       socket.off("addContactError");
       socket.off("updateMessageReceiver");
       socket.off("updateMessageSender");
+      socket.off("Sendertyping");
+      socket.off("stopSendertyping");
     };
   }, [socket]);
 
@@ -47,19 +53,25 @@ export const ChatProvider = ({ children }) => {
     socket.emit("sendMessage", data);
   };
 
-  const sendCameraCapture = (data) => {
-    socket.emit("sendCapture", data);
+  const typing = (data) => {
+    socket.emit("typing", data);
+  };
+
+  const stopTyping = (data) => {
+    socket.emit("stopTyping", data);
   };
 
   const contextValue = {
     setContactData,
-    sendCameraCapture,
     contactData,
     sendMessage,
     openChat,
     message,
     getChat,
     setOpenChat,
+    typing,
+    isTyping,
+    stopTyping,
   };
   return (
     <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>

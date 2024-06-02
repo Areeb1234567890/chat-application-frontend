@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from "./DrawerStyles";
+import { Container, Typing } from "./DrawerStyles";
 import avatar from "../../../assets/images/avatar2.png";
 import Drawer from "@mui/material/Drawer";
 import { useChatContext } from "../../../context/chatContext";
@@ -19,7 +19,7 @@ const ContactDets = () => {
 
     setState({ ...state, [anchor]: open });
   };
-  const { contactData } = useChatContext();
+  const { contactData, isTyping } = useChatContext();
 
   return (
     <Container>
@@ -28,8 +28,10 @@ const ContactDets = () => {
         alt="Image"
         onClick={toggleDrawer(anchor, true)}
       />
-      <span>{contactData.name}</span>
-
+      <div className="wrap">
+        <span>{contactData.name}</span> <br />
+        {isTyping && <Typing>typing....</Typing>}
+      </div>
       <Drawer
         sx={{
           "& .MuiPaper-root": {

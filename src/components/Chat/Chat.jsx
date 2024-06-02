@@ -23,7 +23,10 @@ import FilePreview from "../Additionals/FilePreview/FilePreview";
 import { getFileType } from "../../services/getFileType";
 
 const Chat = () => {
-  const { message, sendMessage, contactData } = useChatContext();
+  const maxSizeInMB = 10;
+  const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+  const { message, sendMessage, contactData, typing, stopTyping } =
+    useChatContext();
   const _token = sessionStorage.getItem("authUser");
   const { userId } = _token ? JSON.parse(_token) : {};
   const [messageToSend, setMessageToSend] = useState({
@@ -62,22 +65,34 @@ const Chat = () => {
     }));
   }, [contactData]);
 
+  useEffect(() => {
+    if (messageToSend.message === "") {
+      stopTyping(messageToSend);
+    }
+  }, [messageToSend.message]);
+
   const inputHandler = (e) => {
     const { name, value } = e.target;
     setMessageToSend({ ...messageToSend, [name]: value });
+    if (messageToSend.message !== "") {
+      typing(messageToSend);
+    }
   };
   const fileHandler = (e) => {
     const file = e.target.files[0];
-    setMessageToSend((prev) => ({ ...prev, file }));
-    handleClose();
-    getFileType(setFileType, setDisplayFile, file);
-    setOpenPreview(true);
+    if (file && file.size <= maxSizeInBytes) {
+      setMessageToSend((prev) => ({ ...prev, file }));
+      handleClose();
+      getFileType(setFileType, setDisplayFile, file);
+      setOpenPreview(true);
+    } else {
+      toast.error(`You can't send a file that is bigger than ${maxSizeInMB}mb`);
+    }
   };
 
   const requestMessage = () => {
     if (messageToSend.file !== "") {
-      // sendMessage(messageToSend);
-      console.log(messageToSend);
+      sendMessage(messageToSend);
       setMessageToSend((prev) => ({ ...prev, message: "", file: "" }));
       setOpenPreview(false);
     } else {
@@ -128,7 +143,7 @@ const Chat = () => {
               }
             />
           )}
-          
+
           <Send>
             <Menu
               id="fade-menu"

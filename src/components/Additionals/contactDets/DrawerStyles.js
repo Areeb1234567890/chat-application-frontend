@@ -18,3 +18,8 @@ export const Container = styled.div`
     font-size: 17px;
   }
 `;
+
+export const Typing = styled.h3`
+  font-size: 15px;
+  color: #06cf9c;
+`;

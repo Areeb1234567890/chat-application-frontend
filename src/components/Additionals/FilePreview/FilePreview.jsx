@@ -122,11 +122,12 @@ const Container = styled.div`
     justify-content: center;
     img {
       max-width: 55%;
+      max-height: 450px;
     }
     video,
     iframe {
       width: 60%;
-      max-height: 500px;
+      max-height: 450px;
       border: none;
     }
   }
