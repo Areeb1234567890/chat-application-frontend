@@ -42,6 +42,7 @@ const Chat = () => {
   const [fileType, setFileType] = useState("");
   const [displayfile, setDisplayFile] = useState(null);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const [debounce, setDebounce] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -65,19 +66,19 @@ const Chat = () => {
     }));
   }, [contactData]);
 
-  useEffect(() => {
-    if (messageToSend.message === "") {
-      stopTyping(messageToSend);
-    }
-  }, [messageToSend.message]);
-
   const inputHandler = (e) => {
     const { name, value } = e.target;
     setMessageToSend({ ...messageToSend, [name]: value });
-    if (messageToSend.message !== "") {
-      typing(messageToSend);
-    }
+    typing(messageToSend);
+
+    if (debounce) clearTimeout(debounce);
+    setDebounce(
+      setTimeout(() => {
+        stopTyping(messageToSend);
+      }, 1000)
+    );
   };
+
   const fileHandler = (e) => {
     const file = e.target.files[0];
     if (file && file.size <= maxSizeInBytes) {
