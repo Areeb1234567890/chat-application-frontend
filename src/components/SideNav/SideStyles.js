@@ -79,10 +79,15 @@ export const Contacts = styled.div`
       background-color: #2a3942;
     }
     .Image {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #202c33;
       img {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
+        object-fit: contain;
       }
     }
     .Info {

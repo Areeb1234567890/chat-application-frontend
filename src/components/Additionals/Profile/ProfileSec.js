@@ -150,7 +150,12 @@ const ProfileSec = () => {
     await deleteProfile();
     setIsLoading(false);
   };
-
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      updateProfile();
+    }
+  };
   return (
     <Profile>
       <img
@@ -186,7 +191,7 @@ const ProfileSec = () => {
         ) : (
           ""
         )}
-        <ImageSec image={profilePicture || avatar}>
+        <ImageSec sm={false} image={profilePicture || avatar}>
           <Menu
             id="demo-positioned-menu"
             aria-labelledby="demo-positioned-button"
@@ -249,6 +254,7 @@ const ProfileSec = () => {
               View photo
             </MenuItem>
           </Menu>
+          
           <Modal
             open={open3}
             onClose={handleClose2}
@@ -283,6 +289,7 @@ const ProfileSec = () => {
               </div>
             </Box>
           </Modal>
+
           <Modal
             open={open4}
             onClose={handleClose3}
@@ -345,6 +352,7 @@ const ProfileSec = () => {
               </div>
             </Box>
           </Modal>
+
           <Modal
             open={removeModal}
             onClose={removeModalClose}
@@ -399,12 +407,14 @@ const ProfileSec = () => {
                 />
               </div>
             </div>
+
             <div className="editWrapper">
               <div className="editCon">
                 <input
                   type="text"
                   name="name"
                   autocomplete="off"
+                  onKeyDown={handleKeyDown}
                   onChange={(e) => inputHandler(e)}
                   placeholder={name}
                 />
@@ -437,6 +447,7 @@ const ProfileSec = () => {
                   type="text"
                   name="bio"
                   autocomplete="off"
+                  onKeyDown={handleKeyDown}
                   onChange={(e) => inputHandler(e)}
                   placeholder={bio}
                 />

@@ -31,11 +31,25 @@ export const Top = styled.div`
 
 export const ImageSec = styled.div`
   width: 100%;
-  padding: 30px;
+  padding: ${({ sm }) => (sm === true ? "10px" : "30px")};
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
+  .ContactConPcture {
+    width: 250px;
+    height: 250px;
+    background-color: #202c33;
+    border-radius: 50%;
+    cursor: pointer;
+    .ContactImage {
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
   .imageCon {
     width: 230px;
     height: 230px;
