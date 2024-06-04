@@ -22,6 +22,7 @@ import {
   ButtonCancel,
 } from "./DrawerStyles";
 import { useAuthContext } from "../../../context/authContext";
+import { useContactContext } from "../../../context/contactContext";
 
 const ProfileSec = () => {
   const style = {
@@ -75,7 +76,7 @@ const ProfileSec = () => {
   const _token = sessionStorage.getItem("authUser");
   const { profilePicture, name, bio } = _token ? JSON.parse(_token) : {};
   const [anchorEl, setAnchorEl] = useState(null);
-  const [open, setOpen] = useState(false);
+  const { open, setOpen } = useContactContext();
   const open2 = Boolean(anchorEl);
   const [open3, setOpen3] = useState(false);
   const [open4, setOpen4] = useState(false);
@@ -254,7 +255,7 @@ const ProfileSec = () => {
               View photo
             </MenuItem>
           </Menu>
-          
+
           <Modal
             open={open3}
             onClose={handleClose2}

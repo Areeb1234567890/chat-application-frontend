@@ -7,6 +7,7 @@ const ContactContext = createContext();
 export const ContactProvider = ({ children }) => {
   const _token = sessionStorage.getItem("authUser");
   const { userId } = _token ? JSON.parse(_token) : {};
+  const [open, setOpen] = useState(false);
   const [contacts, setContacts] = useState([]);
   const socket = useSocket();
 
@@ -54,7 +55,7 @@ export const ContactProvider = ({ children }) => {
     }
   };
 
-  const contextValue = { addContact, getContacts, contacts };
+  const contextValue = { addContact, getContacts, setOpen, open, contacts };
 
   return (
     <ContactContext.Provider value={contextValue}>

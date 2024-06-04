@@ -41,22 +41,6 @@ export const Send = styled.div`
   justify-content: flex-start;
   gap: 10px;
 
-  .TextFeild {
-    width: 90%;
-    border: none;
-    outline: none;
-    font-size: 15px;
-    height: 45px;
-    font-family: Roboto;
-    border-radius: 10px;
-    background-color: #2a3942;
-    color: #dadada;
-    padding: 0 10px;
-  }
-  .TextFeild::placeholder {
-    color: #8696a0;
-    font-size: 15px;
-  }
   .imgCon {
     user-select: none;
     height: 40px;
@@ -109,4 +93,21 @@ export const Input = styled.input`
   bottom: 0;
   left: 0;
   right: 0;
+`;
+
+export const MessageField = styled.input`
+  width: 90%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  height: 45px;
+  font-family: Roboto;
+  border-radius: 10px;
+  background-color: #2a3942;
+  color: #dadada;
+  padding: 0 10px;
+  &::placeholder {
+    color: #8696a0;
+    font-size: 15px;
+  }
 `;

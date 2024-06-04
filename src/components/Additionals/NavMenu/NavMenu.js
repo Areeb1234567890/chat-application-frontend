@@ -40,7 +40,7 @@ const NavMenu = () => {
   const handleModalClose = () => setOpenModal(false);
   const navigate = useNavigate();
   const { Logout } = useAuthContext();
-  const { addContact } = useContactContext();
+  const { addContact, setOpen } = useContactContext();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -147,7 +147,13 @@ const NavMenu = () => {
         <MenuItem onClick={handleClose} sx={menuItemHoverStyle}>
           New Group
         </MenuItem>
-        <MenuItem onClick={handleClose} sx={menuItemHoverStyle}>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            setOpen(true);
+          }}
+          sx={menuItemHoverStyle}
+        >
           Settings
         </MenuItem>
         <MenuItem

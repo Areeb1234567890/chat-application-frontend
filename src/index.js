@@ -7,19 +7,22 @@ import { ChatProvider } from "./context/chatContext";
 import { ContactProvider } from "./context/contactContext";
 import CssBaseline from "@mui/material/CssBaseline";
 import { SocketProvider } from "./context/socketProvider";
+import { RtcProvider } from "./context/rtcContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <SocketProvider>
-        <ChatProvider>
-          <ContactProvider>
-            <CssBaseline />
-            <App />
-          </ContactProvider>
-        </ChatProvider>
-      </SocketProvider>
+      <RtcProvider>
+        <SocketProvider>
+          <ChatProvider>
+            <ContactProvider>
+              <CssBaseline />
+              <App />
+            </ContactProvider>
+          </ChatProvider>
+        </SocketProvider>
+      </RtcProvider>
     </AuthProvider>
   </React.StrictMode>
 );

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ChatWrap, Send, Wrapper, Image, Input } from "./ChatStyles";
+import {
+  ChatWrap,
+  Send,
+  Wrapper,
+  Image,
+  Input,
+  MessageField,
+} from "./ChatStyles";
 import bg from "../../assets/images/chat-bg.png";
 import addIcon from "../../assets/images/add.png";
 import sendIcon from "../../assets/images/SendIcon.png";
@@ -21,12 +28,14 @@ import CustomEmojiPicker from "../Additionals/EmojiPicker/index";
 import MessageHandler from "../Additionals/MessageHandler/MessageHandler";
 import FilePreview from "../Additionals/FilePreview/FilePreview";
 import { getFileType } from "../../services/getFileType";
+import { useRtc } from "../../context/rtcContext";
 
 const Chat = () => {
   const maxSizeInMB = 10;
   const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
   const { message, sendMessage, contactData, typing, stopTyping } =
     useChatContext();
+  // const { peer, createOffer } = useRtc();
   const _token = sessionStorage.getItem("authUser");
   const { userId } = _token ? JSON.parse(_token) : {};
   const [messageToSend, setMessageToSend] = useState({
@@ -144,7 +153,7 @@ const Chat = () => {
               }
             />
           )}
-          
+
           <Send>
             <Menu
               id="fade-menu"
@@ -220,7 +229,7 @@ const Chat = () => {
             >
               <img className="addIcon" src={addIcon} alt="addIcon" />
             </div>
-            <input
+            <MessageField
               className="TextFeild"
               type="text"
               value={messageToSend.message}

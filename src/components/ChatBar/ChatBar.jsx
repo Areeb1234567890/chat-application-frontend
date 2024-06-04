@@ -3,6 +3,7 @@ import ContactDets from "../Additionals/contactDets/contactDets";
 import styled from "styled-components";
 import menu from "../../assets/images/Menu.png";
 import searchIcon from "../../assets/images/Search.png";
+import videoIcon from "../../assets/images/video.png";
 
 const ChatBar = () => {
   return (
@@ -20,6 +21,14 @@ const ChatBar = () => {
           <img
             style={{ height: "20px", width: "20px" }}
             src={searchIcon}
+            alt="Menu"
+          />
+        </div>
+
+        <div className="imgDiv">
+          <img
+            style={{ height: "20px", width: "20px" }}
+            src={videoIcon}
             alt="Menu"
           />
         </div>
