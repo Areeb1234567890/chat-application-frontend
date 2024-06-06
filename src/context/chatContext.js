@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useSocket } from "./socketProvider";
 import { toast } from "react-toastify";
+import { useRtc } from "./rtcContext";
 
 const ChatContext = createContext();
 
@@ -10,15 +11,26 @@ export const ChatProvider = ({ children }) => {
   const [contactData, setContactData] = useState();
   const [isTyping, setIsTyping] = useState(false);
   const [message, setMessage] = useState({});
+  const [openCall, setOpenCall] = useState(false);
+  const [callerDetail, setCallerDetail] = useState();
+  const [isReceiving, setIsReceiving] = useState(false);
+  const [isCalling, setIsCalling] = useState(false);
   const socket = useSocket();
+  const { createAnswer, rejectOffer } = useRtc();
 
   useEffect(() => {
     socket.on("updateMessageReceiver", (data) => {
       getChat(data.id);
     });
-
     socket.on("Sendertyping", () => setIsTyping(true));
     socket.on("stopSendertyping", () => setIsTyping(false));
+    socket.on("call-declined", () => {
+      handelDeclinedCall();
+    });
+
+    socket.on("incomming-Video_call", (data) => {
+      incomingVideoCall(data);
+    });
 
     socket.on("updateMessageSender", (data) => {
       getChat(data.id);
@@ -30,9 +42,11 @@ export const ChatProvider = ({ children }) => {
 
     return () => {
       socket.off("addContactError");
+      socket.off("call-declined");
       socket.off("updateMessageReceiver");
       socket.off("updateMessageSender");
       socket.off("Sendertyping");
+      socket.off("incomming-Video_call");
       socket.off("stopSendertyping");
     };
   }, [socket]);
@@ -49,8 +63,31 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
+  const incomingVideoCall = (data) => {
+    setCallerDetail(data.caller);
+    setOpenCall(true);
+    setIsReceiving(true);
+    // const answer = await createAnswer(offer);
+  };
+
+  const declineCall = (data) => {
+    socket.emit("decline-call", data);
+    setOpenCall(false);
+  };
+
+  const handelDeclinedCall = async () => {
+    await rejectOffer();
+    setOpenCall(false);
+  };
+
   const sendMessage = (data) => {
     socket.emit("sendMessage", data);
+  };
+
+  const videoCall = (data) => {
+    socket.emit("videoCall-user", data);
+    setOpenCall(true);
+    setIsCalling(true);
   };
 
   const typing = (data) => {
@@ -62,6 +99,8 @@ export const ChatProvider = ({ children }) => {
   };
 
   const contextValue = {
+    declineCall,
+    videoCall,
     setContactData,
     contactData,
     sendMessage,
@@ -72,6 +111,11 @@ export const ChatProvider = ({ children }) => {
     typing,
     isTyping,
     stopTyping,
+    openCall,
+    setOpenCall,
+    callerDetail,
+    isReceiving,
+    isCalling,
   };
   return (
     <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>

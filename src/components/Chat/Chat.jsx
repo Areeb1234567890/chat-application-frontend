@@ -28,14 +28,12 @@ import CustomEmojiPicker from "../Additionals/EmojiPicker/index";
 import MessageHandler from "../Additionals/MessageHandler/MessageHandler";
 import FilePreview from "../Additionals/FilePreview/FilePreview";
 import { getFileType } from "../../services/getFileType";
-import { useRtc } from "../../context/rtcContext";
 
 const Chat = () => {
   const maxSizeInMB = 10;
   const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
   const { message, sendMessage, contactData, typing, stopTyping } =
     useChatContext();
-  // const { peer, createOffer } = useRtc();
   const _token = sessionStorage.getItem("authUser");
   const { userId } = _token ? JSON.parse(_token) : {};
   const [messageToSend, setMessageToSend] = useState({
@@ -66,7 +64,6 @@ const Chat = () => {
       backgroundColor: "#182229",
     },
   };
-
   useEffect(() => {
     setMessageToSend((prev) => ({
       ...prev,
@@ -74,7 +71,6 @@ const Chat = () => {
       receiverId: contactData.contact_id,
     }));
   }, [contactData]);
-
   const inputHandler = (e) => {
     const { name, value } = e.target;
     setMessageToSend({ ...messageToSend, [name]: value });
@@ -87,7 +83,6 @@ const Chat = () => {
       }, 1000)
     );
   };
-
   const fileHandler = (e) => {
     const file = e.target.files[0];
     if (file && file.size <= maxSizeInBytes) {
@@ -99,7 +94,6 @@ const Chat = () => {
       toast.error(`You can't send a file that is bigger than ${maxSizeInMB}mb`);
     }
   };
-
   const requestMessage = () => {
     if (messageToSend.file !== "") {
       sendMessage(messageToSend);
@@ -124,8 +118,7 @@ const Chat = () => {
 
   return (
     <Wrapper>
-      <ChatBar />
-
+      <ChatBar callerId={userId} receiverId={messageToSend.receiverId} />
       {openPreview ? (
         <FilePreview
           displayFile={displayfile}
@@ -140,9 +133,7 @@ const Chat = () => {
       ) : (
         <ChatWrap image={bg}>
           <div className="bg" onClick={() => setEmojiPickerOpen(false)} />
-
           <MessageHandler message={message} userId={userId} />
-
           {emojiPickerOpen && (
             <CustomEmojiPicker
               onSelectEmoji={(emoji) =>
@@ -153,7 +144,6 @@ const Chat = () => {
               }
             />
           )}
-
           <Send>
             <Menu
               id="fade-menu"
@@ -215,7 +205,6 @@ const Chat = () => {
                 Contact
               </MenuItem>
             </Menu>
-
             <div
               className={`imgCon ${emojiPickerOpen ? "activate" : ""}`}
               onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
@@ -250,7 +239,6 @@ const Chat = () => {
           </Send>
         </ChatWrap>
       )}
-
       {cameraOpen && (
         <WebcamCapture
           receiverId={messageToSend.receiverId}

@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useCallback } from "react";
 import ContactDets from "../Additionals/contactDets/contactDets";
 import styled from "styled-components";
 import menu from "../../assets/images/Menu.png";
 import searchIcon from "../../assets/images/Search.png";
 import videoIcon from "../../assets/images/video.png";
+import { useChatContext } from "../../context/chatContext";
+import { useRtc } from "../../context/rtcContext";
 
-const ChatBar = () => {
+const ChatBar = ({ callerId, receiverId }) => {
+  const { videoCall } = useChatContext();
+  const { peer, createOffer } = useRtc();
+
+  const handleVideocall = useCallback(async () => {
+    const offer = await createOffer();
+    await videoCall({ callerId, receiverId, offer });
+  }, [createOffer]);
+
   return (
     <Sender>
       <ContactDets />
@@ -25,7 +35,7 @@ const ChatBar = () => {
           />
         </div>
 
-        <div className="imgDiv">
+        <div className="imgDiv" onClick={handleVideocall}>
           <img
             style={{ height: "20px", width: "20px" }}
             src={videoIcon}

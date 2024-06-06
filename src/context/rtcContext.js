@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 const RtcContext = createContext(null);
 
@@ -11,11 +11,20 @@ export const RtcProvider = ({ children }) => {
     return offer;
   };
 
-  return (
-    <RtcContext.Provider value={{ peer, createOffer }}>
-      {children}
-    </RtcContext.Provider>
-  );
+  const createAnswer = async (offer) => {
+    await peer.setRemoteDescription(offer);
+    const answer = await peer.createAnswer();
+    await peer.setLocalDescription(answer);
+    return answer;
+  };
+
+  const rejectOffer = async () => {
+    await peer.setLocalDescription({ type: "rollback" });
+  };
+
+  const value = { peer, createOffer, createAnswer, rejectOffer };
+
+  return <RtcContext.Provider value={value}>{children}</RtcContext.Provider>;
 };
 
 export const useRtc = () => {

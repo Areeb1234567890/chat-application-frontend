@@ -35,6 +35,7 @@ a {
 
 .main {
   padding: 20px 15px 0px;
+  position: relative;
 }
 
 .wrapper {
