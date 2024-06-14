@@ -5,7 +5,7 @@ const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
   const socket = useMemo(
-    () => io("https://chat-application-backend-one.vercel.app"),
+    () => io("https://chat-application-backend-one.vercel.app/"),
     []
   );
   return (
