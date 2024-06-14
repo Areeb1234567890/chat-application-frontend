@@ -10,6 +10,10 @@ const Register = () => {
     password: "",
   };
   const [data, setData] = useState(value);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -47,13 +51,18 @@ const Register = () => {
           onChange={(e) => inputHandler(e)}
           placeholder="Enter your email"
         />
-        <input
-          type="password"
-          name="password"
-          required
-          onChange={(e) => inputHandler(e)}
-          placeholder="Enter your password"
-        />
+        <div className="passwordCon">
+          <input
+            name="password"
+            type={showPassword ? "text" : "password"}
+            required
+            onChange={(e) => inputHandler(e)}
+            placeholder="Enter your password"
+          />
+          <span onClick={togglePasswordVisibility} className="toggle-password">
+            {showPassword ? "🔓" : "🔒"}
+          </span>
+        </div>
         <Button>Next</Button>
         <hr />
         <div className="redirect">
