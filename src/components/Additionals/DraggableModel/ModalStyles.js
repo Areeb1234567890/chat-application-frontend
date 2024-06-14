@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   width: ${({ size }) => (!size ? "600px" : "100%")};
-  height: ${({ size }) => (!size ? "500px" : "100%")};
+  height: ${({ size }) => (!size ? "530px" : "100%")};
   z-index: 100;
   background-color: #111b21;
   transition: ${({ size }) =>

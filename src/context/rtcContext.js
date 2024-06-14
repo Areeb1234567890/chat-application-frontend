@@ -22,7 +22,11 @@ export const RtcProvider = ({ children }) => {
     await peer.setLocalDescription({ type: "rollback" });
   };
 
-  const value = { peer, createOffer, createAnswer, rejectOffer };
+  const saveAnswer = async (answer) => {
+    await peer.setRemoteDescription(answer);
+  };
+
+  const value = { peer, createOffer, createAnswer, rejectOffer, saveAnswer };
 
   return <RtcContext.Provider value={value}>{children}</RtcContext.Provider>;
 };

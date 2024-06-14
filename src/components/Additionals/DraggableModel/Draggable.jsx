@@ -8,6 +8,7 @@ import {
   ButtonContainer,
 } from "./ModalStyles";
 import minimize from "../../../assets/images/minimize.png";
+import avatar from "../../../assets/images/avatar2.png";
 import maximize from "../../../assets/images/maximize.png";
 import bg from "../../../assets/images/chat-bg.png";
 import call from "../../../assets/images/call.png";
@@ -18,12 +19,15 @@ const DraggableModal = () => {
   const [resetPosition, setResetPosition] = useState(false);
   const draggableRef = useRef(null);
   const {
+    cancelCall,
+    receiverDetail,
     openCall,
     callerDetail,
     isReceiving,
     isCalling,
     declineCall,
-    contactData,
+    isDeclined,
+    handleAcceptCall,
   } = useChatContext();
 
   useEffect(() => {
@@ -39,12 +43,23 @@ const DraggableModal = () => {
     setTimeout(() => setMinimize(true), 0);
   };
 
+  const acceptCall = () => {
+    handleAcceptCall({
+      offer: callerDetail.offer,
+      id: callerDetail.caller._id,
+    });
+  };
+
   const handleMaximize = () => {
     setMinimize(false);
   };
 
   const handleDeclineCall = () => {
-    declineCall(callerDetail._id);
+    declineCall(callerDetail.caller._id);
+  };
+
+  const cancelOngoingCall = () => {
+    cancelCall(receiverDetail._id);
   };
 
   if (!openCall) return null;
@@ -58,7 +73,10 @@ const DraggableModal = () => {
     >
       <Container size={minimizeModal}>
         <Handle size={minimizeModal}>
-          <h3>{isCalling ? "Ongoing " : "Incoming "}Video Call</h3>
+          <h3>
+            {isCalling ? "Ongoing " : "Incoming "}Video Call
+            {isDeclined && " (Declined)"}
+          </h3>
           {minimizeModal ? (
             <div className="imgDiv" onClick={handleMaximize}>
               <img
@@ -83,15 +101,15 @@ const DraggableModal = () => {
           {callerDetail && isReceiving && (
             <DetailContainer
               size={minimizeModal}
-              image={callerDetail.profileImage}
+              image={callerDetail.caller.profileImage || avatar}
             >
               <div className="profileImage" />
               <div className="textCon">
-                <h2>{callerDetail.name}</h2>
-                <h3>{callerDetail.email}</h3>
+                <h2>{callerDetail.caller.name}</h2>
+                <h3>{callerDetail.caller.email}</h3>
               </div>
               <ButtonContainer>
-                <div className="button accept">
+                <div className="button accept" onClick={acceptCall}>
                   <img src={call} />
                 </div>
                 <div className="button decline" onClick={handleDeclineCall}>
@@ -101,18 +119,19 @@ const DraggableModal = () => {
             </DetailContainer>
           )}
 
-          {contactData && isCalling && (
+          {receiverDetail && isCalling && (
             <DetailContainer
               size={minimizeModal}
-              image={contactData.profileImage}
+              image={receiverDetail.profileImage || avatar}
             >
               <div className="profileImage" />
+              {isDeclined && <h3>(Declined)</h3>}
               <div className="textCon">
-                <h2>{contactData.name}</h2>
-                <h3>{contactData.email}</h3>
+                <h2>{receiverDetail.name}</h2>
+                <h3>{receiverDetail.email}</h3>
               </div>
               <ButtonContainer>
-                <div className="button decline">
+                <div className="button decline" onClick={cancelOngoingCall}>
                   <img src={call} />
                 </div>
               </ButtonContainer>

@@ -13,41 +13,57 @@ export const ChatProvider = ({ children }) => {
   const [message, setMessage] = useState({});
   const [openCall, setOpenCall] = useState(false);
   const [callerDetail, setCallerDetail] = useState();
+  const [receiverDetail, setReceiverDetail] = useState();
   const [isReceiving, setIsReceiving] = useState(false);
   const [isCalling, setIsCalling] = useState(false);
+  const [isDeclined, setIsDeclined] = useState(false);
   const socket = useSocket();
-  const { createAnswer, rejectOffer } = useRtc();
+  const { createAnswer, rejectOffer, saveAnswer } = useRtc();
 
   useEffect(() => {
-    socket.on("updateMessageReceiver", (data) => {
+    const handleUpdateMessageReceiver = (data) => {
       getChat(data.id);
-    });
-    socket.on("Sendertyping", () => setIsTyping(true));
-    socket.on("stopSendertyping", () => setIsTyping(false));
-    socket.on("call-declined", () => {
+    };
+    const handleSendertyping = () => setIsTyping(true);
+    const handleStopSendertyping = () => setIsTyping(false);
+    const handleReceiverDataVideoCall = (data) => {
+      setReceiverDetail(data.receiver);
+    };
+    const handleCallDeclined = () => {
       handelDeclinedCall();
-    });
-
-    socket.on("incomming-Video_call", (data) => {
+    };
+    const handleIncomingVideoCall = (data) => {
       incomingVideoCall(data);
-    });
-
-    socket.on("updateMessageSender", (data) => {
+    };
+    const handleUpdateMessageSender = (data) => {
       getChat(data.id);
-    });
-
-    socket.on("addContactError", (error) => {
+    };
+    const handleAddContactError = (error) => {
       toast.error(error.msg);
-    });
+    };
+
+    socket.on("updateMessageReceiver", handleUpdateMessageReceiver);
+    socket.on("call-accepted-by-receiver", acceptedCallHandling);
+    socket.on("Sendertyping", handleSendertyping);
+    socket.on("stopSendertyping", handleStopSendertyping);
+    socket.on("receiver_Data-video_call", handleReceiverDataVideoCall);
+    socket.on("call-declined", handleCallDeclined);
+    socket.on("incomming-Video_call", handleIncomingVideoCall);
+    socket.on("updateMessageSender", handleUpdateMessageSender);
+    socket.on("addContactError", handleAddContactError);
+    socket.on("call-cancelled", handleCancelledCall);
 
     return () => {
-      socket.off("addContactError");
-      socket.off("call-declined");
-      socket.off("updateMessageReceiver");
-      socket.off("updateMessageSender");
-      socket.off("Sendertyping");
-      socket.off("incomming-Video_call");
-      socket.off("stopSendertyping");
+      socket.off("call-accepted-by-receiver", acceptedCallHandling);
+      socket.off("updateMessageReceiver", handleUpdateMessageReceiver);
+      socket.off("Sendertyping", handleSendertyping);
+      socket.off("stopSendertyping", handleStopSendertyping);
+      socket.off("receiver_Data-video_call", handleReceiverDataVideoCall);
+      socket.off("call-declined", handleCallDeclined);
+      socket.off("incomming-Video_call", handleIncomingVideoCall);
+      socket.off("updateMessageSender", handleUpdateMessageSender);
+      socket.off("addContactError", handleAddContactError);
+      socket.off("call-cancelled", handleCancelledCall);
     };
   }, [socket]);
 
@@ -64,30 +80,62 @@ export const ChatProvider = ({ children }) => {
   };
 
   const incomingVideoCall = (data) => {
-    setCallerDetail(data.caller);
+    setCallerDetail(data);
     setOpenCall(true);
     setIsReceiving(true);
-    // const answer = await createAnswer(offer);
+  };
+
+  const handleAcceptCall = async (data) => {
+    const { offer, id } = data;
+    const answer = await createAnswer(offer);
+    socket.emit("call-accepted", { answer, id });
+  };
+
+  const acceptedCallHandling = async (data) => {
+    const { answer } = data;
+    await saveAnswer(answer);
   };
 
   const declineCall = (data) => {
     socket.emit("decline-call", data);
     setOpenCall(false);
+    setCallerDetail(null);
   };
 
   const handelDeclinedCall = async () => {
     await rejectOffer();
-    setOpenCall(false);
+    setIsDeclined(true);
+    setTimeout(() => {
+      setOpenCall(false);
+      setIsCalling(false);
+      setIsDeclined(false);
+      setReceiverDetail(null);
+    }, 1000);
   };
 
-  const sendMessage = (data) => {
-    socket.emit("sendMessage", data);
+  const handleCancelledCall = async () => {
+    setOpenCall(false);
+    setIsCalling(false);
+    setCallerDetail(null);
   };
 
   const videoCall = (data) => {
     socket.emit("videoCall-user", data);
     setOpenCall(true);
     setIsCalling(true);
+    setReceiverDetail(null);
+  };
+
+  const cancelCall = async (data) => {
+    socket.emit("cancel-Call", data);
+    await rejectOffer();
+    setOpenCall(false);
+    setIsCalling(false);
+    setReceiverDetail(null);
+  };
+
+  const sendMessage = (data) => {
+    socket.emit("sendMessage", data);
   };
 
   const typing = (data) => {
@@ -99,6 +147,10 @@ export const ChatProvider = ({ children }) => {
   };
 
   const contextValue = {
+    handleAcceptCall,
+    cancelCall,
+    receiverDetail,
+    isDeclined,
     declineCall,
     videoCall,
     setContactData,

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import ContactDets from "../Additionals/contactDets/contactDets";
 import styled from "styled-components";
 import menu from "../../assets/images/Menu.png";
