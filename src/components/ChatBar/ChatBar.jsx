@@ -9,7 +9,7 @@ import { useRtc } from "../../context/rtcContext";
 
 const ChatBar = ({ callerId, receiverId }) => {
   const { videoCall } = useChatContext();
-  const { peer, createOffer } = useRtc();
+  const { createOffer } = useRtc();
 
   const handleVideocall = useCallback(async () => {
     const offer = await createOffer();

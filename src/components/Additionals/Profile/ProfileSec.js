@@ -159,13 +159,14 @@ const ProfileSec = () => {
   };
   return (
     <Profile>
-      <img
-        className="profileIcon"
-        src={profilePicture || avatar}
-        alt="profile"
-        onClick={toggleDrawer(true)}
-      />
-
+      <div className="profileContainer">
+        <img
+          className="profileIcon"
+          src={profilePicture || avatar}
+          alt="profile"
+          onClick={toggleDrawer(true)}
+        />
+      </div>
       <Drawer
         sx={{
           "& .MuiPaper-root": {

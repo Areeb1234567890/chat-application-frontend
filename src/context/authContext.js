@@ -97,7 +97,6 @@ export const AuthProvider = ({ children }) => {
         };
         sessionStorage.setItem("authUser", JSON.stringify(newAuthUserData));
         toast.success(msg);
-        // window.location.reload();
       }
     } catch (error) {
       toast.error(error.response.data.msg);

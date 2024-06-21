@@ -7,6 +7,8 @@ import { useRtc } from "./rtcContext";
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
+  const _token = sessionStorage.getItem("authUser");
+  const { userId } = _token ? JSON.parse(_token) : {};
   const [openChat, setOpenChat] = useState(false);
   const [contactData, setContactData] = useState();
   const [isTyping, setIsTyping] = useState(false);
@@ -14,11 +16,12 @@ export const ChatProvider = ({ children }) => {
   const [openCall, setOpenCall] = useState(false);
   const [callerDetail, setCallerDetail] = useState();
   const [receiverDetail, setReceiverDetail] = useState();
+  const [isAccepted, setIsAccepted] = useState(false);
   const [isReceiving, setIsReceiving] = useState(false);
   const [isCalling, setIsCalling] = useState(false);
   const [isDeclined, setIsDeclined] = useState(false);
   const socket = useSocket();
-  const { createAnswer, rejectOffer, saveAnswer } = useRtc();
+  const { createAnswer, rejectOffer, saveAnswer, peer, createOffer } = useRtc();
 
   useEffect(() => {
     const handleUpdateMessageReceiver = (data) => {
@@ -41,6 +44,12 @@ export const ChatProvider = ({ children }) => {
     const handleAddContactError = (error) => {
       toast.error(error.msg);
     };
+    const handelNegStarted = (data) => {
+      answerNeg(data);
+    };
+    const handelNegAnswer = (data) => {
+      manageNegAnswer(data);
+    };
 
     socket.on("updateMessageReceiver", handleUpdateMessageReceiver);
     socket.on("call-accepted-by-receiver", acceptedCallHandling);
@@ -52,6 +61,8 @@ export const ChatProvider = ({ children }) => {
     socket.on("updateMessageSender", handleUpdateMessageSender);
     socket.on("addContactError", handleAddContactError);
     socket.on("call-cancelled", handleCancelledCall);
+    socket.on("negotiation:started", handelNegStarted);
+    socket.on("negotiation:receiveAnswer", handelNegAnswer);
 
     return () => {
       socket.off("call-accepted-by-receiver", acceptedCallHandling);
@@ -64,8 +75,28 @@ export const ChatProvider = ({ children }) => {
       socket.off("updateMessageSender", handleUpdateMessageSender);
       socket.off("addContactError", handleAddContactError);
       socket.off("call-cancelled", handleCancelledCall);
+      socket.off("negotiation:started", handelNegStarted);
+      socket.off("negotiation:receiveAnswer", handelNegAnswer);
     };
   }, [socket]);
+
+  const handleNegotiation = async () => {
+    if (isCalling) {
+      const offer = await createOffer();
+      socket.emit("negotiation:init", {
+        receiver: receiverDetail._id,
+        offer: offer,
+        caller: userId,
+      });
+    }
+  };
+
+  useEffect(() => {
+    peer.addEventListener("negotiationneeded", handleNegotiation);
+    return () => {
+      peer.removeEventListener("negotiationneeded", handleNegotiation);
+    };
+  }, [peer, handleNegotiation]);
 
   const getChat = async (id) => {
     try {
@@ -85,21 +116,38 @@ export const ChatProvider = ({ children }) => {
     setIsReceiving(true);
   };
 
+  const answerNeg = async (data) => {
+    const { offer, caller } = data;
+    const answer = await createAnswer(offer);
+    socket.emit("negotiation:answer", {
+      answer: answer,
+      caller: caller,
+    });
+  };
+
+  const manageNegAnswer = async (data) => {
+    const { answer } = data;
+    await saveAnswer(answer);
+  };
+
   const handleAcceptCall = async (data) => {
     const { offer, id } = data;
     const answer = await createAnswer(offer);
     socket.emit("call-accepted", { answer, id });
+    setIsAccepted(true);
   };
 
   const acceptedCallHandling = async (data) => {
     const { answer } = data;
     await saveAnswer(answer);
+    setIsAccepted(true);
   };
 
   const declineCall = (data) => {
     socket.emit("decline-call", data);
     setOpenCall(false);
     setCallerDetail(null);
+    setIsAccepted(false);
   };
 
   const handelDeclinedCall = async () => {
@@ -108,6 +156,7 @@ export const ChatProvider = ({ children }) => {
     setTimeout(() => {
       setOpenCall(false);
       setIsCalling(false);
+      setIsAccepted(false);
       setIsDeclined(false);
       setReceiverDetail(null);
     }, 1000);
@@ -116,6 +165,7 @@ export const ChatProvider = ({ children }) => {
   const handleCancelledCall = async () => {
     setOpenCall(false);
     setIsCalling(false);
+    setIsAccepted(false);
     setCallerDetail(null);
   };
 
@@ -123,6 +173,7 @@ export const ChatProvider = ({ children }) => {
     socket.emit("videoCall-user", data);
     setOpenCall(true);
     setIsCalling(true);
+    setIsAccepted(false);
     setReceiverDetail(null);
   };
 
@@ -131,6 +182,7 @@ export const ChatProvider = ({ children }) => {
     await rejectOffer();
     setOpenCall(false);
     setIsCalling(false);
+    setIsAccepted(false);
     setReceiverDetail(null);
   };
 
@@ -147,6 +199,7 @@ export const ChatProvider = ({ children }) => {
   };
 
   const contextValue = {
+    isAccepted,
     handleAcceptCall,
     cancelCall,
     receiverDetail,

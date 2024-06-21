@@ -138,3 +138,16 @@ export const ButtonContainer = styled.div`
     }
   }
 `;
+
+export const StreamContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 30px;
+  .stream {
+    height: 45%;
+    border-radius: 50%;
+    width: 45%;
+  }
+`;

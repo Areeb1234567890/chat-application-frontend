@@ -2,11 +2,18 @@ import styled from "@emotion/styled";
 
 export const Profile = styled.div`
   display: flex;
-  .profileIcon {
+  .profileContainer {
     height: 45px;
     width: 45px;
     border-radius: 50%;
-    cursor: pointer;
+    background-color: #111b21;
+    .profileIcon {
+      height: 45px;
+      width: 45px;
+      object-fit: contain;
+      border-radius: 50%;
+      cursor: pointer;
+    }
   }
 `;
 
@@ -54,6 +61,7 @@ export const ImageSec = styled.div`
     width: 230px;
     height: 230px;
     border-radius: 50%;
+    background-color: #202c33;
     cursor: pointer;
     position: relative;
     background-image: url(${(props) => props.image});
